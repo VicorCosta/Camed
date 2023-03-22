@@ -1,0 +1,78 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div>
+                    <button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div>
+                    <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 1em">
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <input type="hidden" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Seguradora *</label>
+                        <select class="form-control" formControlName="Seguradora_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('seguradora_id') }" id="seguradorasop">
+                          <option value="0">Selecione</option>
+
+                          <option *ngFor="let seguradora of (seguradoras$ | async)?.value" [ngValue]="seguradora.id">
+                            {{
+                              seguradora.nm_Seguradora 
+                            }}
+                          </option>
+
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('seguradora_id')">
+                          <div *ngFor="let item of result.validators['seguradora_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                      <!--  -->
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Texto/HTML *</label>
+                        <quill-editor 
+                        placeholder="Comece escrevendo aqui.." 
+                        formControlName="Texto" 
+                        [ngClass]="{'is-invalid': submitted && invalid('texto')}" value="Texto">
+                        </quill-editor>
+                        <div class="invalid-feedback" *ngIf="invalid('texto')">
+                          <div *ngFor="let item of result.validators['texto']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

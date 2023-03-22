@@ -1,0 +1,84 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div>
+                    <button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">
+                      Cancelar
+                    </button>
+                  </div>
+                  <div>
+                    <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <!-- <lib-toastify-toast-container [autoClose]="50000"></lib-toastify-toast-container> -->
+                  <input type="hidden" formControlName="id" />
+                  <div class="col">
+                    <div class="form-group ui-fluid">
+                      <label>Atendente *</label>
+                      <p-autoComplete #autoCompleteSituacaoAtual [(ngModel)]="situacaoAtualSelecionada"
+                        [ngModelOptions]="{standalone: true}" [suggestions]="atendentes" [minLength]="1" [delay]="0"
+                        (completeMethod)="searchAtendentes($event)" (onSelect)="setSituacaoAtual($event)"
+                        (change)="setSituacaoAtual($event)"
+                        [forceSelection]="true"
+                        (onFocus)="!autoCompleteSituacaoAtual.value && autoCompleteSituacaoAtual" dropdownMode="current"
+                        dataKey="id" field="nome" class="formControl"
+                        [ngClass]="{ 'is-invalid': submitted && invalid('atendente_id') }">
+                      </p-autoComplete>
+                      <div class="invalid-feedback" *ngIf="invalid('atendente_id')">
+                        <div *ngFor="let item of result.validators['atendente_id']">{{ item.value }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+
+                    <div class="form-group ui-fluid">
+                      <label>Data Inicial *</label>
+                      <input class="form-control" name="date" type="date" formControlName="dataInicioAusencia">
+                      <div class="invalid-feedback" *ngIf="invalid('datainicioausencia')">
+                        <div *ngFor="let item of result.validators['datainicioausencia']">{{ item.value }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="form-group ui-fluid">
+                      <label>Data Final *</label>
+                      <input class="form-control" name="date" type="date" formControlName="dataFinalAusencia">
+                      <div class="invalid-feedback" *ngIf="invalid('datafinalausencia')">
+                        <div *ngFor="let item of result.validators['datafinalausencia']">{{ item.value }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

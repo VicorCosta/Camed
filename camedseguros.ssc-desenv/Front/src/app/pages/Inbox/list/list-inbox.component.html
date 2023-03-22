@@ -1,0 +1,111 @@
+<app-header-page></app-header-page>
+
+<div class="wrapper wrapper-content">
+
+  <!-- <p-sidebar [(visible)]="display" position="right" [baseZIndex]="10000" styleClass="ui-sidebar-md"
+        (onHide)="handleClosePanel($event)">
+        <app-form-inbox (eventoConcluido)="handleEventoConcluido($event)" (closePanel)="handleClosePanel($event)"
+            [inbox]="InboxSelecionada">
+        </app-form-inbox>
+    </p-sidebar> -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+              <div class="ibox-tools" style="top: 15px;">
+                <button icon="fa fa-plus" type="text" routerLink="form" type="text"
+                  class="btn btn-sm btn-primary float-left m-t-n-xs rounded">
+                  <i class="fa fa-plus"> </i> Nova Mensagem </button>
+
+              </div>
+              <div class="container w-100" style="display: flex; flex-wrap: wrap;">
+                <p-selectButton class="button-duo" #selectButton [options]="opcoes" [(ngModel)]="filtroEnviados"
+                  (onChange)="trocarFiltro()"></p-selectButton>
+                <button *ngIf="qntdMsgLidas != 0 && podeVerBotao == true" class="btn"
+                  style="background-color:#bce1ce; margin-left: 15px;" type="button" (click)="marcarComoLidas()">
+                  Marcar todos como lidas
+                </button>
+              </div>
+            </div>
+
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-start;">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Data Incial</label>
+                    <input style="height: 30px;" type="date" class="form-control" [(ngModel)]="filter.dataInicial"
+                      value="dataInicial" />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Data Final</label>
+                    <input style="height: 30px;" type="date" class="form-control" [(ngModel)]="filter.dataFinal"
+                      value="dataFinal" />
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <label>Origem</label>
+                  <select class="form-control" [(ngModel)]="filter.origem">
+                    <option value="">Todos</option>
+                    <option value="null">Sistema</option>
+                    <option value="user">Usuário</option>
+                  </select>
+                </div>
+
+                <div class="col-md-2">
+                  <label>Status</label>
+                  <select class="form-control" [(ngModel)]="filter.status">
+                    <option value="">Todos</option>
+                    <option value="true">Lida</option>
+                    <option value="false">Não Lida</option>
+                  </select>
+                </div>
+
+                <div class="col-md-2">
+                  <label>Número Solicitação</label>
+                  <br>
+                  <input type="number" class="form-control" [(ngModel)]="filter.solicitacaoSelecionada" />
+                </div>
+
+                <div class="col-md-2">
+                  <label>CPF/CNPJ</label>
+                  <br>
+                  <input type="text" mask="CPF_CNPJ" class="form-control" [(ngModel)]="filter.cpfCnpj" />
+                </div>
+
+                <div class="col-md-3 m-b-xs">
+                  <button class="btn btn-primary float-left" style="margin-top: 2.1em;" type="button"
+                    (click)="pesquisar()">
+                    <span class="fa fa-search mr-1"></span>
+                    Pesquisar
+                  </button>
+                </div>
+
+              </div>
+
+
+              <div id="tabela">
+                <angular-slickgrid gridHeight="350" gridId="gridInbox" [hidden]="loadingDataGrid && hasInitialLoading"
+                  [columnDefinitions]="columnDefinitions" [gridOptions]="gridOptions" [dataset]="dataset"
+                  (onAngularGridCreated)="angularGridReady($event.detail)">
+                </angular-slickgrid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <span>Carregando....</span>
+  </ng-template>
+
+</div>

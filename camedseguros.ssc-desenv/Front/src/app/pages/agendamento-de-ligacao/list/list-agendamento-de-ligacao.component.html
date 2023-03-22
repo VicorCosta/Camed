@@ -1,0 +1,145 @@
+<app-header-page></app-header-page>
+
+<div class="wrapper wrapper-content">
+
+  <!-- <p-sidebar [(visible)]="display" position="right" [baseZIndex]="10000" styleClass="ui-sidebar-md">
+    <app-form-usuario (eventoConcluido)="handleEventoConcluido($event)" (closePanel)="handleClosePanel($event)"
+      [usuario]="itemSelecionado"></app-form-usuario>
+  </p-sidebar> -->
+
+  <div class="modal fade" id="modalDeRetorno" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalDeRetornoLabel">Retorno Agendamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label class="col-form-label">Data Ligação</label>
+              <input name="dataLigacao" ngDefaultControl [ngModelOptions]="{standalone: true}" [(ngModel)]="dataLigacao" type="date" class="form-control" id="recipient-name">
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Tipo Retorno Ligação</label>
+              <select class="form-control" id="optionT" [ngModelOptions]="{standalone: true}" [(ngModel)]="descricaoLigacao">
+                <option *ngFor="let retorno of retornos" [value]="retorno.id" [selected]="descricaoLigacao === retorno.id">
+                  {{retorno.descricao }}
+                </option>
+              </select>
+            </div>
+            <div class="alert alert-danger" role="alert" id="alertRetornoAgendamento" style="display: none;">
+              Preencha todos os campos antes de cadastar.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" id="cadastrarRetorno" class="btn btn-primary">Cadastrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div id="alertObg"
+              *ngIf="filter.valid == true && filter.selectedDevice == null || filter.valid == true && filter.inputDataFinal == null || filter.valid == true && filter.inputDataInicial == null"
+              class="alert alert-danger" role="alert">
+              Preencha todos os campos obrigatórios
+            </div>
+            <div class="ibox-title">
+              <div class="ibox-tools">
+                <button id="buttonNovoAgendamento" type="text" (click)="openPanel()" pButton
+                  class="btn btn-sm btn-primary float-left m-t-n-xs"><i class="fa fa-plus"></i> Novo
+                  Agendamento</button>
+              </div>
+            </div>
+            <div class="ibox-content" id="gird-container">
+              <div>
+                <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+                <div class="form-row">
+                  <div class="col">
+                    <label>Status *</label>
+                    <div>
+                      <select class="form-control" [(ngModel)]="filter.selectedDevice">
+                        <option value="Abertas">Abertas</option>
+                        <option value="Fechadas">Fechadas</option>
+                        <option value="Todas">Todas</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <label>Número</label>
+                    <div>
+                      <input class="form-control" [(ngModel)]="filter.inputDevice" />
+                    </div>
+                  </div>
+
+                  <div class="col">
+
+                    <label>Data Inicial *</label>
+                    <div>
+                      <input type="date" class="form-control" [(ngModel)]="filter.inputDataInicial" />
+                    </div>
+
+                  </div>
+
+                  <div class="col">
+                    <label>Data Final *</label>
+                    <br />
+                    <div>
+                      <input class="form-control" type="date" [(ngModel)]="filter.inputDataFinal" />
+                    </div>
+
+                  </div>
+
+                  <div class="col">
+                    <label>Atendente</label>
+                    <br />
+                    <!-- <p-autoComplete #autoCompleteAg [disabled]="loggedUser.ehAtendente" class="formControl"
+                      [suggestions]="atendentes" [forceSelection]="true"
+                      formControlName="filter.inputAtendente"
+                      (onFocus)="!autoCompleteAg.value && autoCompleteAg" [dropdown]="true"
+                      (completeMethod)="search($event)" field="nome">
+
+                    </p-autoComplete> -->
+                    <p-autoComplete #autoComplete [disabled]="loggedUser.ehAtendente"
+                      [(ngModel)]="filter.inputAtendente" id="atendente" aria-disabled="true"
+                      [ngModelOptions]="{standalone: true}" [suggestions]="atendentes" [minLength]="1" [delay]="0"
+                      (completeMethod)="search($event)" [forceSelection]="true"
+                      (onFocus)="!autoComplete.value && autoComplete" dropdownMode="current" dataKey="nome" field="nome"
+                      class="formControl">
+                    </p-autoComplete>
+                  </div>
+
+                  <div class="col mt-3">
+                    <button class="btn btn-sm btn-primary float-left m-t-n-xs mt-2 p-2" (click)="pesquisar()">
+                      <span class="fa fa-search mr-1"></span>
+                      Pesquisar
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+              <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+
+              <div id="tabela">
+                <angular-slickgrid gridId="gridUsuario" [hidden]="loadingDataGrid && hasInitialLoading"
+                  [columnDefinitions]="columnDefinitions" [gridOptions]="gridOptions" [dataset]="dataset"
+                  (onAngularGridCreated)="angularGridReady($event.detail)">
+                </angular-slickgrid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+    body .ui-selectbutton .ui-button.ui-state-active:not(.ui-state-disabled):hover {
+      background-color: #ef8f00 !important;
+      border-color: #ef8f00 !important;
+      color: #fff !important;
+    }
+
+    body .ui-selectbutton .ui-button.ui-state-active {
+      background-color: #ef8f00 !important;
+      border-color: #ef8f00 !important;
+      color: #fff !important;
+    }
+
+    .ui-autocomplete {
+      max-height: 40vh !important;
+      min-height: 150px !important;
+    }
+
+    .ms-drop input[type="checkbox"]+span:before,
+    .ms-drop input[type="radio"]+span:before {
+      color: #ef8f00;
+    }
+
+    .ui-autocomplete-input-token input {
+      width: 30rem;
+    }

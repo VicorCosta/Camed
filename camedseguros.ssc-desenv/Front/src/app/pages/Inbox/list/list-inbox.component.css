@@ -1,0 +1,19 @@
+ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+  background: #ef8f00 !important;
+}
+
+body .ui-selectbutton .ui-button.ui-state-active {
+  background-color: #ef8f00 !important;
+  border-color: #ef8f00 !important;
+  color: #fff !important;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+  background-color: #ef8f00 !important;
+  border-color: #ef8f00 !important;
+  color: #fff !important;
+}

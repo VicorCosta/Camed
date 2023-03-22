@@ -1,0 +1,190 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "ssc-front-angular": {
+            "projectType": "application",
+            "schematics": {},
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/ssc-front-angular",
+                        "buildOptimizer": true,
+                        "aot": true,
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "tsconfig.app.json",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ],
+                        "styles": [
+                            "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+                            "./node_modules/font-awesome/css/font-awesome.min.css",
+                            "./node_modules/flatpickr/dist/flatpickr.css",
+                            "./node_modules/primeicons/primeicons.css",
+                            "./node_modules/primeng/resources/primeng.min.css",
+                            "node_modules/multiple-select-modified/src/multiple-select.css",
+                            "node_modules/@slickgrid-universal/common/dist/styles/css/slickgrid-theme-bootstrap.css",
+                            "./node_modules/quill/dist/quill.core.css",
+                            "./node_modules/quill/dist/quill.snow.css",
+                            "./node_modules/primeng/resources/themes/rhea/theme.css",
+                            "src/assets/css/animate.css",
+                            "src/assets/css/style.css"
+                        ],
+                        "scripts": [
+                            "./node_modules/jquery/dist/jquery.min.js",
+                            "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+                            "src/assets/js/popper.min.js",
+                            "src/assets/js/plugins/metisMenu/jquery.metisMenu.js",
+                            "src/assets/js/plugins/slimscroll/jquery.slimscroll.min.js",
+                            "src/assets/js/inspinia.js",
+                            "src/assets/js/plugins/pace/pace.min.js",
+                            "src/assets/js/plugins/jquery-ui/jquery-ui.min.js",
+                            "src/assets/js/plugins/sparkline/jquery.sparkline.min.js",
+                            "./node_modules/slickgrid/lib/jquery.event.drag-2.3.0.js",
+                            "node_modules/multiple-select-modified/src/multiple-select.js",
+                            "./node_modules/quill/dist/quill.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb",
+                                    "maximumError": "10kb"
+                                }
+                            ]
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "ssc-front-angular:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "ssc-front-angular:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "ssc-front-angular:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development",
+                    "styles": [
+                        "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                        "node_modules/font-awesome/css/font-awesome.min.css",
+                        "node_modules/flatpickr/dist/flatpickr.css",
+                        "node_modules/multiple-select-modified/src/multiple-select.css",
+                        "src/assets/css/animate.css",
+                        "node_modules/angular-slickgrid/styles/css/slick-grid.css",
+                        "node_modules/primeicons/primeicons.css",
+                        "node_modules/primeng/resources/primeng.min.css",
+                        "node_modules/primeng/resources/themes/nova-light/theme.css",
+                        "src/assets/css/style.css",
+                        "./node_modules/quill/dist/quill.core.css",
+                        "./node_modules/quill/dist/quill.snow.css"
+                    ],
+                    "scripts": [
+                        "node_modules/jquery/dist/jquery.min.js",
+                        "node_modules/bootstrap/dist/js/bootstrap.min.js",
+                        "src/assets/js/popper.min.js",
+                        "src/assets/js/plugins/metisMenu/jquery.metisMenu.js",
+                        "src/assets/js/plugins/slimscroll/jquery.slimscroll.min.js",
+                        "src/assets/js/inspinia.js",
+                        "src/assets/js/plugins/pace/pace.min.js",
+                        "src/assets/js/plugins/jquery-ui/jquery-ui.min.js",
+                        "src/assets/js/plugins/sparkline/jquery.sparkline.min.js",
+                        "node_modules/slickgrid/lib/jquery.event.drag-2.3.0.js",
+                        "node_modules/multiple-select-modified/src/multiple-select.js",
+                        "./node_modules/quill/dist/quill.js"
+                    ]
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "ssc-front-angular:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "src/test.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "tsconfig.spec.json",
+                        "karmaConfig": "karma.conf.js",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ]
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "tsconfig.app.json",
+                            "tsconfig.spec.json",
+                            "e2e/tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                },
+                "e2e": {
+                    "builder": "@angular-devkit/build-angular:protractor",
+                    "options": {
+                        "protractorConfig": "e2e/protractor.conf.js",
+                        "devServerTarget": "ssc-front-angular:serve"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ssc-front-angular:serve:production"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "defaultProject": "ssc-front-angular",
+    "cli": {
+        "analytics": false
+    }
+}

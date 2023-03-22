@@ -1,0 +1,441 @@
+<app-header-page></app-header-page>
+<div *ngIf="alertError" class="alert alert-danger mt-5 mb-0 ml-3 mr-4">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div *ngIf="!viewOnly" class="d-flex mr-4">
+                    <button [disabled]="loading" class="btn btn-primary ml-auto" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                  <div>
+                    <button class="btn btn-white ml-auto" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                </div>
+              </div>
+
+              <div [style]="{width: '100%', height: '90%'}">
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <input type="hidden" formControlName="id">
+                  <input type="hidden" formControlName="solicitante_id">
+                  <input type="hidden" formControlName="segurado_id">
+                  <div class="row" [ngSwitch]="activeIndex">
+
+                    <div class="d-flex">
+                      <p-steps class="formControl pl-4" [model]="EtapasSolicitacao" [(activeIndex)]="activeIndex"
+                        [readonly]="false">
+                      </p-steps>
+                    </div>
+
+                    <div class="col-md-12" *ngSwitchCase="PageNames.Solicitante">
+                      <h2>Solicitante</h2>
+
+                      <div class="d-flex">
+                        <div class="form-group w-50 mr-4">
+                          <label><span class="campo-obrigatorio">*</span>Solicitante</label>
+                          <input type="text" [readonly]="viewOnly" class="form-control"
+                            formControlName="solicitante_nome"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('solicitante_nome') }">
+                          <div class="invalid-feedback" *ngIf="invalid('solicitante_nome')">
+                            <div *ngFor="let item of result.validators['solicitante_nome']">
+                              {{item.value }}</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group w-50">
+                          <label><span class="campo-obrigatorio">*</span>E-Mail</label>
+                          <input type="email" required class="form-control" [readonly]="false"
+                            formControlName="solicitante_email"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('Solicitante_email') }">
+                          <div class="invalid-feedback" *ngIf="invalid('solicitante_email')">
+                            <div *ngFor="let item of result.validators['solicitante_email']">
+                              {{
+                                                            item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group" *ngIf="MostrarOrigem()">
+                        <label><span class="campo-obrigatorio">*</span>Origem</label>
+                        <select class="form-control" required *ngIf="!viewOnly" formControlName="origem">
+                          <option value="">Selecione uma opção</option>
+                          <option value="1">Email</option>
+                          <option value="2">Telefone</option>
+                        </select>
+                        <input *ngIf="viewOnly" type="text" [readonly]="viewOnly" class="form-control"
+                          formControlName="origem">
+                      </div>
+                      <div class="d-flex">
+                        <div class="form-group w-50 mr-4">
+                          <label><span class="campo-obrigatorio">*</span>Telefone</label>
+                          <input type="text" required [readonly]="false" class="form-control"
+                            formControlName="solicitante_telefonePrincipal"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('solicitante_telefonePrincipal') }">
+                          <div class="invalid-feedback" *ngIf="invalid('solicitante_telefonePrincipal')">
+                            <div *ngFor="let item of result.validators['solicitante_telefonePrincipal']">
+                              {{ item.value
+                                                            }}</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group w-50">
+                          <label>Celular</label>
+                          <input type="text" [readonly]="false" class="form-control"
+                            formControlName="solicitante_telefoneCelular"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('solicitante_telefoneCelular') }">
+                          <div class="invalid-feedback" *ngIf="invalid('solicitante_telefoneCelular')">
+                            <div *ngFor="let item of result.validators['solicitante_telefoneCelular']">
+                              {{ item.value }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Outro</label>
+                        <input type="text" [readonly]="false" class="form-control"
+                          formControlName="solicitante_telefoneAdicional"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('solicitante_telefoneAdicional') }">
+                        <div class="invalid-feedback" *ngIf="invalid('solicitante_telefoneAdicional')">
+                          <div *ngFor="let item of result.validators['solicitante_telefoneAdicional']">
+                            {{ item.value
+                                                        }}</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="d-block"><span class="campo-obrigatorio">*</span>Agencia</label>
+                        <p-autoComplete #autoCompleteAg *ngIf="!viewOnly" required class="formControl"
+                          formControlName="agencia" [suggestions]="Agencias" [forceSelection]="true"
+                          (onFocus)="!autoCompleteAg.value && autoCompleteAg" [dropdown]="true"
+                          (completeMethod)="searchAgencias($event)" field="nome">
+                        </p-autoComplete>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="agencia" class="form-control">
+                      </div>
+                    </div>
+
+                    <div class="col-md-12" *ngSwitchCase="PageNames.Solicitacao">
+                      <h2>Solicitação</h2>
+                      <div class="form-group">
+                        <label><span class="campo-obrigatorio">*</span>Tipo de
+                          Seguro</label>
+                        <p-autoComplete #autoCompleteTS *ngIf="!viewOnly" [required]="true" class="formControl"
+                          [readonly]="viewOnly" [forceSelection]="true"
+                          (onFocus)="!autoCompleteTS.value && autoCompleteTS" dropdownMode="current"
+                          formControlName="tipoDeSeguro" [suggestions]="TiposDeSeguro" [dropdown]="true"
+                          (completeMethod)="searchTS($event)" field="nome"
+                          (onSelect)="handleOnSelectTipoSeguro($event)"></p-autoComplete>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="tipoDeSeguro"
+                          class="form-control">
+                      </div>
+
+
+                      <div class="form-group" *ngIf="MostrarSeguroObrigatorio()">
+                        <label>Seguro Obrigatório?</label>
+                        <p-inputSwitch formControlName="operacaoDeFinanciamento" [readonly]="false" class="row pl-3">
+                        </p-inputSwitch>
+                      </div>
+
+
+                      <div class="form-group" *ngIf="MostrarSegmento()">
+                        <label><span class="campo-obrigatorio">*</span>Segmento</label>
+                        <p-autoComplete #autoCompleteSeg *ngIf="!viewOnly" class="formControl" [required]="true"
+                          [forceSelection]="true" (onFocus)="!autoCompleteSeg.value && autoCompleteSeg"
+                          dropdownMode="current" formControlName="segmento" [suggestions]="Segmentos"
+                          (completeMethod)="searchSegmentos($event)" field="nome" [dropdown]="true"></p-autoComplete>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="segmento" class="form-control">
+                      </div>
+                      <div class="form-group" *ngIf="MostrarDataFimDeVigencia()">
+                        <label><span class="campo-obrigatorio">*</span>Data Fim Vigência</label>
+                        <input type="date" class="form-control" *ngIf="!viewOnly" formControlName="dataFimVigencia"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('dataFimVigencia') }">
+                        <input type="text" *ngIf="viewOnly" class="form-control" [readonly]="true"
+                          formControlName="dataFimVigencia">
+                      </div>
+
+                      <div class="form-group">
+                        <label><span class="campo-obrigatorio">*</span>Informações
+                          Adicionais</label>
+                        <textarea class="form-control" required [readonly]="viewOnly" formControlName="dadosAdicionais"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('dadosAdicionais') }"></textarea>
+                        <div class="invalid-feedback" *ngIf="invalid('dadosAdicionais')">
+                          <div *ngFor="let item of result.validators['dadosAdicionais']">
+                            {{
+                                                        item.value }}</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group" *ngIf="MostrarOrcamentoPrevio()">
+                        <label>Orçamento Prévio?</label>
+                        <p-inputSwitch [readonly]="viewOnly" formControlName="orcamentoPrevio" class="row pl-3">
+                        </p-inputSwitch>
+                      </div>
+
+                      <div class="form-group" *ngIf="MostrarMercado()">
+                        <label>Mercado?</label>
+                        <p-inputSwitch [readonly]="viewOnly" formControlName="mercado" class="row pl-3"></p-inputSwitch>
+                      </div>
+
+                      <div *ngIf="MostrarDadosTalentoPremiado()">
+                        <h2>Dados Para Talento Premiado</h2>
+                        <div class="form-group">
+                          <label><span class="campo-obrigatorio">*</span>Produtor BNB</label>
+                          <p-autoComplete #autoCompletePr *ngIf="!viewOnly" class="formControl"
+                            (onFocus)="!autoCompletePr.value && autoCompletePr" dropdownMode="current"
+                            formControlName="produtor" [suggestions]="Produtores"
+                            (completeMethod)="searchProdutores($event)" field="nome" [dropdown]="true">
+                          </p-autoComplete>
+                          <input *ngIf="viewOnly" [readonly]="false" type="text" formControlName="produtor" class="form-control">
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-md-12" *ngSwitchCase="PageNames.Segurado">
+                      <h2>Segurado</h2>
+                      <div class="d-flex">
+
+                        <div class="form-group mr-4 w-50">
+                          <label><span class="campo-obrigatorio">*</span>Canal de
+                            Distribuição</label>
+                          <p-autoComplete *ngIf="!viewOnly" #autoCompleteCD [required]="true" class="formControl"
+                            [forceSelection]="true" (onFocus)="!autoCompleteCD.value && autoCompleteCD"
+                            dropdownMode="current" formControlName="canalDeDistribuicao"
+                            [suggestions]="CanaisDeDistribuicao" (completeMethod)="searchCanaisDeDistribuicao($event)"
+                            field="nome" [dropdown]="true"></p-autoComplete>
+                          <input *ngIf="viewOnly" readonly type="text" formControlName="canalDeDistribuicao"
+                            class="form-control">
+                        </div>
+
+                        <div class="form-group w-50">
+                          <label><span class="campo-obrigatorio">*</span>Ramo de
+                            Seguro</label>
+                          <p-autoComplete #autoCompleteRS *ngIf="!viewOnly" (ngModelChange)="modelChangeFn($event)"
+                            class="formControl" [required]="true" [forceSelection]="true"
+                            (onFocus)="!autoCompleteRS.value && autoCompleteRS" dropdownMode="current"
+                            formControlName="tipoDeProduto" [suggestions]="TiposDeProduto"
+                            (completeMethod)="searchTipoDeProduto($event)" field="nome" [dropdown]="true">
+                            <div></div>
+                          </p-autoComplete>
+                          <input *ngIf="viewOnly" [readonly]="false" type="text" formControlName="tipoDeProduto"
+                            class="form-control">
+                        </div>
+                      </div>
+
+                      <div class="d-flex">
+                        <div class="form-group mr-4 w-50">
+                          <label><span class="campo-obrigatorio">*</span>CPF/CNPJ</label>
+                          <input type="text" class="form-control" required [readonly]="false"
+                            formControlName="segurado_cpfCnpj" (blur)="PreencheSegurado()"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('segurado_cpfCnpj') }">
+                          <div class="invalid-feedback" *ngIf="invalid('segurado_cpfCnpj')">
+                            <div *ngFor="let item of result.validators['segurado_cpfCnpj']">
+                              {{
+                                                            item.value }}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="form-group w-50">
+                          <label><span class="campo-obrigatorio">*</span>Segurado</label>
+                          <input type="text" class="form-control" required [readonly]="false||loading"
+                            [required]="true" formControlName="segurado_nome"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('segurado_nome') }">
+                          <div class="invalid-feedback" *ngIf="invalid('segurado_nome')">
+                            <div *ngFor="let item of result.validators['segurado_nome']">{{
+                                                            item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label><span class="campo-obrigatorio">*</span>E-Mail</label>
+                        <input type="email" class="form-control" required [readonly]="false||loading"
+                          formControlName="segurado_email"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_email') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_email')">
+                          <div *ngFor="let item of result.validators['segurado_email']">{{
+                                                        item.value }}</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group" *ngIf="MostrarVinculoBNB()&&!DesabilitaVinculoBNB()">
+                        <label><span class="campo-obrigatorio">*</span>Vínculo BNB</label>
+                        <p-autoComplete #autoCompleteVB [required]="true" *ngIf="!viewOnly" class="formControl"
+                          [forceSelection]="true" (onFocus)="!autoCompleteVB.value && autoCompleteVB"
+                          dropdownMode="current" formControlName="segurado_vinculoBNB" [suggestions]="VinculosBNB"
+                          (completeMethod)="searchVinculoBNB($event)" field="nome" [dropdown]="true"></p-autoComplete>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="segurado_vinculoBNB"
+                          class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label>E-Mail Secundário</label>
+                        <input type="email" [readonly]="false||loading" class="form-control"
+                          formControlName="segurado_emailSecundario"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_emailSecundario') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_emailSecundario')">
+                          <div *ngFor="let item of result.validators['segurado_emailSecundario']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="d-block"><span class="campo-obrigatorio">*</span>Telefone</label>
+                        <p-inputMask styleClass="w-100" *ngIf="!seguradoPreenchido&&!viewOnly" required type="text"
+                          class="formControl" mask="(99) 99999-9999" formControlName="segurado_telefonePrincipal"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefonePrincipal') }">
+                        </p-inputMask>
+                        <input type="text" *ngIf="seguradoPreenchido&&!viewOnly" [readonly]="false||loading" required
+                          class="form-control" formControlName="segurado_telefonePrincipal"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefonePrincipal') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_telefonePrincipal')">
+                          <div *ngFor="let item of result.validators['segurado_telefonePrincipal']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="segurado_telefonePrincipal"
+                          class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label class="d-block">Celular</label>
+                        <p-inputMask styleClass="w-100" *ngIf="!seguradoPreenchido&&!viewOnly" type="text"
+                          mask="(99) 99999-9999" formControlName="segurado_telefoneCelular"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefoneCelular') }">
+                        </p-inputMask>
+                        <input type="text" *ngIf="seguradoPreenchido&&!viewOnly" [readonly]="false||loading"
+                          class="form-control" formControlName="segurado_telefoneCelular"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefoneCelular') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_telefoneCelular')">
+                          <div *ngFor="let item of result.validators['segurado_telefoneCelular']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="segurado_telefoneCelular"
+                          class="form-control">
+                      </div>
+
+                      <div class="form-group">
+                        <label class="d-block">Outro</label>
+                        <p-inputMask styleClass="w-100" *ngIf="!seguradoPreenchido&&!viewOnly" type="text"
+                          mask="(99) 99999-9999" formControlName="segurado_telefoneAdicional"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefoneAdicional') }">
+                        </p-inputMask>
+
+                        <input type="text" *ngIf="seguradoPreenchido&&!viewOnly" [readonly]="false||loading"
+                          class="form-control" formControlName="segurado_telefoneAdicional"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_telefoneAdicional') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_telefoneAdicional')">
+                          <div *ngFor="let item of result.validators['segurado_telefoneAdicional']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="segurado_telefoneAdicional"
+                          class="form-control">
+                      </div>
+
+                      <div class="form-group">
+                        <label>Falar Com</label>
+                        <input type="text" class="form-control" [readonly]="false||loading"
+                          formControlName="segurado_conta"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('segurado_conta') }">
+                        <div class="invalid-feedback" *ngIf="invalid('segurado_conta')">
+                          <div *ngFor="let item of result.validators['segurado_conta']">{{
+                                                        item.value }}</div>
+                        </div>
+                      </div>
+                      <div class="form-group" *ngIf="MostrarAgenciaConta()||NaoEhSinistro()">
+                        <label><span class="campo-obrigatorio">*</span>Agência Conta</label>
+                        <p-autoComplete #autoCompleteAC *ngIf="!viewOnly&&!loading" class="row pl-3 formControl"
+                          [forceSelection]="true" (onFocus)="!autoCompleteAC.value && autoCompleteAC"
+                          dropdownMode="current" formControlName="agenciaConta" [suggestions]="AgenciasContas"
+                          (completeMethod)="searchAgenciasContas($event)" field="nome" [dropdown]="true">
+                        </p-autoComplete>
+                        <input *ngIf="viewOnly" readonly type="text" formControlName="agenciaConta"
+                          class="form-control">
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-12" *ngSwitchCase="PageNames.Indicacoes">
+                      <h2>Indicações</h2>
+
+                      <div class="form-group d-flex flex-column" *ngIf="!viewOnly">
+                        <label>Nome: </label>
+                        <input type="text" [readonly]="false" formControlName="nomeIndicado" class="form-control"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('nomeIndicado') }">
+                        <label class="pt-2 d-block">Telefone: </label>
+                        <p-inputMask styleClass="w-100" type="text" [readonly]="false" mask="(99) 99999-9999"
+                          formControlName="telefoneIndicado"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('telefoneIndicado') }">
+                        </p-inputMask>
+                        <button type="button" class="btn btn-primary mt-3 ml-auto"
+                          (click)="salvaIndicado()">Confirmar</button>
+                      </div>
+                      <div class="form-group" *ngIf="indicados.length > 0">
+                        <label>Indicados</label>
+                        <div *ngFor="let indicado of indicados" class="row ml-2 mt-2">
+                          <input type="text" class="form-control col-5" value="{{indicado.nome}}" [readonly]="false">
+                          <input type="text" class="form-control ml-2 col-5" value="{{indicado.telefone}}" [readonly]="false">
+                          <button *ngIf="!viewOnly" class="btn btn-danger ml-1"
+                            (click)="excluirIndicado(indicado)">Excluir</button>
+                        </div>
+                      </div>
+                      <div *ngIf="indicados.length <= 0&&viewOnly" class="form-group">
+                        <label>Sem indicações.</label>
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-12" *ngSwitchCase="PageNames.Anexos">
+                      <h2>Anexos</h2>
+                      <div class="form-group" *ngIf="viewOnly">
+                        <p-fileUpload #fileUploader name="files"
+                          invalidFileSizeMessageSummary="{0}: Tamanho de arquivo inválido, " [showUploadButton]="false"
+                          chooseLabel="Escolher" cancelLabel="Cancelar" (onSelect)="UploadFiles($event)"
+                          (onClear)="onClear()" multiple="multiple" maxFileSize="1000000">
+                          <!-- <ng-template let-file pTemplate="files">
+                            </ng-template> -->
+                        </p-fileUpload>
+                        <!-- <div *ngFor="let file of uploadedFiles">
+                            <span class="col-4">{{file.nome}}</span><button type="button" class="btn btn-danger"
+                                (click)="onRemove(file.nome + file.extensao)">x</button>
+                        </div> -->
+                      </div>
+                      <div class="form-group" *ngIf="viewOnly&&anexos?.length > 0">
+                        <div *ngFor="let file of anexos" class="row">
+                          <div class="text-weight-bold mt-1"><a class="btn btn-primary col-12"
+                              [href]="apiUrl + '/api/solicitacao/download?idArquivo=' + file.id">{{file.nome}}<span
+                                class="pl-2 fa fa-download" aria-hidden="true"></span></a></div>
+                        </div>
+                      </div>
+                      <div *ngIf="anexos?.length <= 0&&viewOnly" class="form-group">
+                        <label>Sem anexos.</label>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+   <p-dialog header="Dados de Solicitação Sombrero" [(visible)]="display" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+      [draggable]="false" [resizable]="false" >
+    <app-form-cotacao-sombrero (idCotacaoSombreroOutput)="receiveMessage($event)"></app-form-cotacao-sombrero>
+  </p-dialog> 

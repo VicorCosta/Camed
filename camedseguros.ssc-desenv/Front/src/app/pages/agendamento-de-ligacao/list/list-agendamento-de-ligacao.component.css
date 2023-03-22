@@ -1,0 +1,10 @@
+.buttonNovoAgendamento{
+    display: none;
+}
+ .preenchido{
+    display: none;  
+ }  
+ .vazio{
+   color: red;
+    display: inline;
+ }

@@ -1,0 +1,1 @@
+export * from './tiposeguro.service';

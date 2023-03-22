@@ -1,0 +1,22 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>
+      {{ menuAtivo?.label }}
+      <a href="javascript: void(0);" style="display: inline-flex; vertical-align: middle;" (click)="showHelper()">
+        <i class="fa fa-question-circle" style="font-size: small;"></i>
+      </a>
+    </h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">Home</a>
+      </li>
+      <li class="breadcrumb-item" *ngIf="menuAtivo?.superior">
+        <a href="/">{{ menuAtivo?.superior?.label }}</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>{{ menuAtivo?.label }}</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-2"></div>
+</div>

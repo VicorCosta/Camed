@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Camed.SSC.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:Camed.SSC.WebAPI.Controllers.AcaoDeAcompanhamentoController">
+            <summary>
+            Api para gerenciar as ações de acompanhamento
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.AcaoDeAcompanhamentoController.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="mediator">oriundo do MediatR</param>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.AgenciaController.Get">
+            <summary>
+            Endpoint no formato OData. Esse endpoint será utilizado para retornar a listagem ou um simples objeto.
+            </summary>
+            <returns>Listagem de valores conforme funções do OData que serão aplicados por cada cliente</returns>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.AgenciaTipoDeAgenciaController">
+            <summary>
+            Api para gerenciar as ações de acompanhamento
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.AgenciaTipoDeAgenciaController.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="mediator">oriundo do MediatR</param>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.ApoliceGSController">
+            <summary>
+            Controller responsável por obter os dados do menu Consultar Documento Apólice
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.ApoliceGSController.Consultar(System.String,System.String,System.String)">
+            <summary>
+            Consulta os dados de apólices
+            </summary>
+            <param name="agencia"></param>
+            <param name="cpfcgc"></param>
+            <param name="tipoSolicitacao"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.ApoliceGSController.ObterArquivo(System.String)">
+            <summary>
+            Obtém o documento de apólice informado
+            </summary>
+            <param name="caminho"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.AuditoriaController.Get">
+            <summary>
+            Endpoint no formato OData. Esse endpoint será utilizado para retornar a listagem ou um simples objeto.
+            </summary>
+            <returns>Listagem de valores conforme funções do OData que serão aplicados por cada cliente</returns>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3">
+            <summary>
+            Controller Base
+            </summary>
+            <typeparam name="TEntity">Mensagem utilizada para realizar o filtro no método GET</typeparam>
+            <typeparam name="TCommandSave">Mensagem utilizada para realizar as ações de Inserir e Editar uma entidade</typeparam>
+            <typeparam name="TCommandDelete">Mensagem utilizada para realizar a ação de excluir uma entidade</typeparam>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe base
+            </summary>
+            <param name="mediator"></param>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3.Get">
+            <summary>
+            Endpoint no formato OData. Esse endpoint será utilizado para retornar a listagem ou um simples objeto.
+            </summary>
+            <returns>Listagem de valores conforme funções do OData que serão aplicados por cada cliente</returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3.Post(`1)">
+            <summary>
+            Endpoint utilizado para salvar as informações
+            </summary>
+            <param name="command">Objeto com os dados a serem armazenados</param>
+            <returns></returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3.Put(`1)">
+            <summary>
+            Endpoint utilizado para alterar as informações de uma entidade
+            </summary>
+            <param name="command">Objeto com os dados a serem alterados</param>
+            <returns></returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.RestfullBaseController`3.Delete(System.Int32)">
+            <summary>
+            Endpoint utilizado para excluir uma entidade
+            </summary>
+            <param name="command">Objeto que possui a chave da entidade a ser excluída</param>
+            <returns></returns>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.CanalDeDistribuicaoController">
+            <summary>
+            Api para gerenciar as ações de acompanhamento
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.CanalDeDistribuicaoController.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="mediator">oriundo do MediatR</param>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.FeriadoController">
+            <summary>
+            Api para gerenciar as ações de acompanhamento
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.FeriadoController.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="mediator">oriundo do MediatR</param>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.FrameController">
+            <summary>
+            Api para gerenciar as ações de acompanhamento
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.FrameController.#ctor(MediatR.IMediator,Camed.SCC.Infrastructure.Data.Interfaces.IUnitOfWork)">
+            <summary>
+            Construtor da classe
+            </summary>
+            <param name="mediator">oriundo do MediatR</param>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.LoginController">
+            <summary>
+            Api para autenticação do sistema SSC
+            </summary>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.LoginController.Post(Camed.SSC.Application.Requests.LoginCommand)">
+            <summary>
+            Endpoint onde se realiza o login para acessar o sistema SSC
+            </summary>
+            <param name="command">Objeto com os atributos "Login" e "Senha" a serem verificados para o acesso ao sistema SSC</param>
+            <returns>Token de acesso para ser utilizado no front-end</returns>
+        </member>
+        <member name="M:Camed.SSC.WebAPI.Controllers.ParametrosSistemaController.Get">
+            <summary>
+            Endpoint no formato OData. Esse endpoint será utilizado para retornar a listagem ou um simples objeto.
+            </summary>
+            <returns>Listagem de valores conforme funções do OData que serão aplicados por cada cliente</returns>
+        </member>
+        <member name="T:Camed.SSC.WebAPI.Controllers.SituacaoController">
+            <summary>
+            Api para gerenciar as situaçãoes
+            </summary>
+        </member>
+    </members>
+</doc>

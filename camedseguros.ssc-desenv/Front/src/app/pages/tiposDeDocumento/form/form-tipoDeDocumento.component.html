@@ -1,0 +1,167 @@
+<app-header-page></app-header-page>
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div
+              style="min-height: 450px"
+              class="ibox-content"
+              id="gird-container"
+            >
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div>
+                    <button
+                      class="btn btn-white mr-4"
+                      type="button"
+                      (click)="onClosePanel()"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      [disabled]="loading"
+                      class="btn btn-primary float-right"
+                      (click)="onSubmit()"
+                    >
+                      <span
+                        *ngIf="loading"
+                        class="spinner-border spinner-border-sm mr-1"
+                      ></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div [style]="{ width: '100%', height: '680px' }">
+                <form
+                  role="form"
+                  [formGroup]="form"
+                  (ngSubmit)="onSubmit()"
+                  *ngIf="result$ | async as result"
+                >
+                  <input type="hidden" formControlName="id" />
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Nome</label>
+                        <input
+                          type="text"
+                          placeholder="Nome"
+                          class="form-control"
+                          [formControl]="form.controls['nome']"
+                          [ngClass]="{
+                            'is-invalid': submitted && invalid('nome')
+                          }"
+                        />
+                        <div class="invalid-feedback" *ngIf="invalid('nome')">
+                          <div *ngFor="let item of result.validators['nome']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Ramos de Seguro</label>
+                        <br />
+                        <div
+                          class="itens"
+                          *ngIf="ramosDeSeguro$ | async as ramos"
+                        >
+                          <div
+                            class="form-check mb-1"
+                            *ngFor="let ramo of ramos.value"
+                          >
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="invalid('acoesAcompanhamento')"
+                            ></div>
+                            <p-checkbox
+                              name="ramo"
+                              [value]="ramo.id"
+                              [formControl]="form.controls['ramosDeSeguro']"
+                              label="{{ ramo.nome }}"
+                            ></p-checkbox>
+                          </div>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="invalid('ramosDeSeguro')">
+                          <div class="mb-1">
+                            {{ result.validators['ramosdeseguro'][0].value }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="form-group mt-4">
+                      <label>Tipo de Morte</label>
+                      <br />
+                      <p-multiSelect
+                        [formControl]="form.controls['tipoMorte_Id']"
+                        [options]="itensTipoMorte$"
+                        defaultLabel="Selecione"
+                        selectionLimit="1"
+                      >
+                      </p-multiSelect>
+                      <div class="invalid-feedback" *ngIf="invalid('tipomorte_id')">
+                        <div class="mb-1">
+                          {{ result.validators['tipomorte_id'][0].value }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Ordem</label>
+                    <br />
+                    <input
+                      type="number"
+                      class="form-control"
+                      [formControl]="form.controls['ordem']"
+                      class="form-control col-md-6"
+                      [ngClass]="{
+                        'is-invalid': submitted && invalid('ordem')
+                      }"
+                    />
+                    <div class="invalid-feedback" *ngIf="invalid('ordem')">
+                      <div *ngFor="let item of result.validators['ordem']">
+                        {{ item.value }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-3">
+                    <div class="mb-1">
+                      <p-checkbox
+                        binary="true"
+                        [formControl]="form.controls['obrigatorio']"
+                        label="Obrigatório"
+                      ></p-checkbox>
+                    </div>
+                    <div>
+                      <p-checkbox
+                        binary="true"
+                        [formControl]="form.controls['ativo']"
+                        label="Ativo"
+                      ></p-checkbox>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

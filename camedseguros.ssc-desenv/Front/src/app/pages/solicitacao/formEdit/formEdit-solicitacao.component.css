@@ -1,0 +1,8 @@
+option:hover {
+    background-color: orange;
+    color: white;
+}
+
+.campo-obrigatorio {
+    color: red;
+}

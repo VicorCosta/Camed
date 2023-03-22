@@ -1,0 +1,220 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div><button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div> <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <!-- <lib-toastify-toast-container [autoClose]="50000"></lib-toastify-toast-container> -->
+                  <input type="hidden" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Matrícula</label>
+                        <input type="text" placeholder="Matrícula" class="form-control" formControlName="matricula"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('matricula') }">
+                        <div class="invalid-feedback" *ngIf="invalid('matricula')">
+                          <div *ngFor="let item of result.validators['matricula']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Login</label>
+                        <input type="text" placeholder="Login" class="form-control" formControlName="login"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('login') }">
+                        <div class="invalid-feedback" *ngIf="invalid('login')">
+                          <div *ngFor="let item of result.validators['login']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" placeholder="Nome" class="form-control" formControlName="nome"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('nome') }">
+                        <div class="invalid-feedback" *ngIf="invalid('nome')">
+                          <div *ngFor="let item of result.validators['nome']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>CPF</label>
+                        <br>
+                        <input type="text" id="CPFinput" onkeyup="
+                        let target = document.getElementById(this.id);
+    
+                        let x = target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
+                        target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + (x[3] ? '.' : '') + x[3] + (x[4] ? '/' : x[4]) + x[4] + (x[5] ? '-' + x[5] : '');
+                        
+                        if(target.value.length < 15) {
+                            x = target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})/);
+                            target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + (x[3] ? '.' : '') + x[3] + (x[4] ? '-' + x[4] : '');
+                        }
+
+                        // console.log('Com formatação: ' + target.value);
+                        
+                        let valor = target.value.replace(/[^0-9]/g, '');
+                        // console.log('Sem formatação: ' + valor);
+                        
+                        " placeholder="000.000.000-00" maxlength="14" class="form-control" formControlName="cpf"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('cpf') }">
+                        <div class="invalid-feedback" *ngIf="invalid('cpf')">
+                          <div *ngFor="let item of result.validators['cpf']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="exemplo@camed.com.br" class="form-control"
+                          formControlName="email" [ngClass]="{ 'is-invalid': submitted && invalid('email') }">
+                        <div class="invalid-feedback" *ngIf="invalid('email')">
+                          <div *ngFor="let item of result.validators['email']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <!-- <div class="form-group">
+                        <label>Empresa</label>
+                        <select class="form-control" formControlName="empresa">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let empresa of (empresas$ | async)?.value" [ngValue]="empresa.id">{{
+                            empresa.nome }}
+                          </option>
+                        </select>
+                      </div> -->
+                      <div class="form-group">
+                        <label>Empresa</label>
+                        <select class="form-control" formControlName="empresa"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('empresa') }">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let empresa of (empresas$ | async)?.value" [ngValue]="empresa.id">{{
+                            empresa.nome }}
+                          </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('empresa')">
+                          <div *ngFor="let item of result.validators['empresa']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Grupos</label>
+                        <div>
+                          <p-multiSelect [formControl]="form.controls['grupos']" [options]="grupos" defaultLabel="Selecione">
+                          </p-multiSelect>
+                        </div>
+                      </div>
+                      <!-- <div class="form-group">
+                        <label>Grupos</label>
+                        <div>
+                          <p-multiSelect [formControl]="form.controls['grupos']" [options]="grupos"
+                            defaultLabel="Selecione" [ngClass]="{ 'is-invalid': submitted && invalid('grupos') }">
+                          </p-multiSelect>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="invalid('grupos')">
+                          <div *ngFor="let item of result.validators['grupos']">{{ item.value }}</div>
+                        </div>
+                      </div> -->
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Grupos de Agência</label>
+                        <br>
+                        <p-multiSelect [formControl]="form.controls['gruposAgencias']" [options]="gruposAgencias"
+                          defaultLabel="Selecione" [ngClass]="{ 'is-invalid': submitted && invalid('gruposagencias') }">
+                        </p-multiSelect>
+                        <div class="invalid-feedback" *ngIf="invalid('gruposagencias')">
+                          <div *ngFor="let item of result.validators['gruposagencias']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Áreas de Negócio</label>
+                        <br>
+                        <p-multiSelect [formControl]="form.controls['areasDeNegocio']" [options]="areasDeNegocio"
+                          defaultLabel="Selecione" [ngClass]="{ 'is-invalid': submitted && invalid('areasdenegocio') }">
+                        </p-multiSelect>
+                        <div class="invalid-feedback" *ngIf="invalid('areasdenegocio')">
+                          <div *ngFor="let item of result.validators['areasdenegocio']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label>Agência</label>
+                        <div>
+                          <p-autoComplete #autoComplete [(ngModel)]="agenciaSelecionada"
+                            [ngModelOptions]="{standalone: true}" [suggestions]="agencias" [minLength]="1" [delay]="0"
+                            (completeMethod)="search($event)" (onSelect)="setAgencia($event)" [forceSelection]="true"
+                            (onFocus)="!autoComplete.value && autoComplete" dropdownMode="current" dataKey="id"
+                            field="nome" class="formControl"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('agencia') }">
+                          </p-autoComplete>
+                          <p-button icon="pi pi-trash" (click)="removeAgencia()" pTooltip="Remover Agência"></p-button>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="invalid('agencia')">
+                          <div *ngFor="let item of result.validators['agencia']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['ativo']" label="Ativo"></p-checkbox>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['enviarSLA']" label="Enviar SLA">
+                        </p-checkbox>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['ehCalculista']" label="É Calculista">
+                        </p-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Usuário existente" [(visible)]="displayBasic" [style]="{width: '50vw'}">
+  <p>Usuário com o mesmo login e matrícula foi excluído anteriormente, porém consta no sistema. Deseja reativá-lo?</p>
+  <ng-template pTemplate="footer">
+    <p-button (click)="onSubmitRestoreUser()" label="Sim" styleClass="p-button-text"></p-button>
+    <p-button (click)="displayBasic=false" label="Não" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>

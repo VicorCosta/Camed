@@ -1,0 +1,25 @@
+* {
+  position: relative;
+}
+
+.itens {
+  width: 97.5%;
+  height: 300px;
+  overflow-y: scroll;
+  padding: 5px 16px;
+}
+
+.labelCheckbox {
+  margin-left: 2%;
+}
+
+.opcoes {
+  position: fixed;
+  bottom: 40px;
+}
+
+p-checkbox {
+  display: initial !important;
+  vertical-align: text-bottom;
+  align-items: center;
+}

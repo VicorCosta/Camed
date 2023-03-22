@@ -1,0 +1,7 @@
+<p-sidebar [(visible)]="display" position="bottom" [baseZIndex]="10000" styleClass="ui-sidebar-md">
+  <div style="padding:1em">
+    <h2>Ajuda da tela</h2>
+    <hr>
+    <div [innerHTML]="menuAtivo?.ajudatexto || 'Não há ajuda cadastrada para essa página'"></div>
+  </div>
+</p-sidebar>

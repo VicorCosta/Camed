@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Camed.SCC.Infrastructure.CrossCutting\Camed.SCC.Infrastructure.CrossCutting.csproj" />
+    <ProjectReference Include="..\Camed.SSC.Core\Camed.SSC.Core.csproj" />
+    <ProjectReference Include="..\Camed.SSC.Model\Camed.SSC.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.11" />
+  </ItemGroup>
+
+</Project>

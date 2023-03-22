@@ -1,0 +1,137 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div>
+                    <button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div>
+                    <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div [style]="{width: '100%', height: '100%'}">
+                <div style="padding:1em">
+                  <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                    <input type="hidden" formControlName="id">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>Parâmetro *</label>
+                          <input (change)="addVariaveis()" id="textoParametro" type="text" required class="form-control" formControlName="parametro"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('parametro') }">
+                          <div class="invalid-feedback" *ngIf="invalid('parametro')">
+                            <div *ngFor="let item of result.validators['parametro']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>Tipos</label>
+                          <br>
+                          <div>
+                            <select class="form-control" formControlName="tipo"
+                              [ngClass]="{ 'is-invalid': submitted && invalid('tipo') }">
+                              <option value=""> Selecione</option>
+                              <option class="form-goup" value=""></option>
+                              <option class="form-goup" value="SMS">SMS</option>
+                              <option class="form-goup" value="EMAIL">EMAIL</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="invalid('tipo')">
+                              <div *ngFor="let item of result.validators['tipo']">{{ item.value }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group" *ngIf="exibirCampo('')">
+                          <label>Valor</label>
+                          <input *ngIf="exibirCampo('')" type="text" placeholder="Valor" class="form-control" formControlName="valor"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('valor') }">
+                          <div class="invalid-feedback" *ngIf="invalid('valor')">
+                            <div *ngFor="let item of result.validators['valor']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12" >
+                        <div class="form-group" *ngIf="exibirCampo('EMAIL')">
+                          <label>Valor</label>
+                          <quill-editor *ngIf="exibirCampo('EMAIL')" placeholder="Valor" formControlName="valor" [ngClass]="{
+                        'is-invalid': submitted && invalid('texto')
+                      }" value="valor">
+                          </quill-editor>
+                          <div class="invalid-feedback" *ngIf="invalid('valor')">
+                            <div *ngFor="let item of result.validators['valor']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12" >
+                        <div class="form-group" *ngIf="exibirCampo('SMS')">
+                          <label>Valor</label>
+                          <input *ngIf="exibirCampo('SMS')" type="text" placeholder="Valor" class="form-control"
+                            formControlName="valor" [ngClass]="{ 'is-invalid': submitted && invalid('valor') }">
+                          <div class="invalid-feedback" *ngIf="invalid('valor')">
+                            <div *ngFor="let item of result.validators['valor']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--
+                      <div class="col-md-12" *ngIf="exibirCampo('SMS')">
+                        <div class="form-group">
+                          <label>Tipo de Parâmetro</label>
+                          <select class="form-control" formControlName="tipoDeParametro_Id"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('tipoDeParametro') }">
+                            <option value="null">Selecione</option>
+                            <option *ngFor="let tipoDeParametro of (tipoDeParametro | async)?.value"
+                              [ngValue]="tipoDeParametro.id">{{
+                            tipoDeParametro.nome }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    -->
+
+                      <div class="col-md-12" *ngIf="exibirCampo('EMAIL') && titulo!='Novo Parâmetro'">
+                        <div class="form-group">
+                          <label>Variáveis de Email</label>
+                          <select class="form-control" formControlName="variaveisDeEmail_Id"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('variaveisDeEmail') }">
+                            <option value="null">Selecione</option>
+                            <option *ngFor="let variaveisDeEmail of variaveisDeEmail" [ngValue]="variaveisDeEmail.id">{{ variaveisDeEmail.nome }}</option>
+                            <!-- <option *ngFor="let variaveisDeEmail of (variaveisDeEmail | async)?.value" [ngValue]="variaveisDeEmail.id">{{ variaveisDeEmail.nome }}</option> -->
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+<!-- <app-header-page></app-header-page> -->
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row"> 
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <!-- <div class="d-flex">
+                  <div>
+                    <button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">
+                      Cancelar
+                    </button>
+                  </div>
+                </div> -->
+              </div>
+              <div [style]="{ width: '100%', height: '90%' }">
+                <div style="padding: 1em">
+                  <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                    <input type="hidden" formControlName="id" />
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>Tipo Subvenção</label>
+                          <select formControlName="tipoSubvencao" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="federal">Federal</option>
+                            <option value="estadual">Estadual</option>
+                            <option value="none">Nenhum</option>
+                          </select>
+                          <div class="invalid-feedback" *ngIf="invalid('tipoSubvencao')">
+                            <div *ngFor="let item of result.validators['tipoSubvencao']">{{ item.value }}</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Código Produto </label>
+                          <select formControlName="codigoProduto" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="12">12</option>
+                          </select>
+                          <div class="invalid-feedback" *ngIf="invalid('codigoProduto')">
+                            <div *ngFor="let item of result.validators['codigoProduto']">{{ item.value }}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="form-group">
+                          <label>Tipo de Cultivo </label>
+                          <select formControlName="codigoCultivo" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="431">Soja</option>
+                          </select>
+                             <div class="invalid-feedback" *ngIf="invalid('codigoCultivo')">
+                            <div *ngFor="let item of result.validators['codigoCultivo']">{{ item.value }}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="form-group">
+                          <label>Nível Cobertura</label>
+                          <select formControlName="nivelCobertura" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="60">60%</option>
+                            <option value="65">65%</option>
+                            <option value="75">75%</option>
+                          </select>
+                            <div class="invalid-feedback" *ngIf="invalid('nivelCobertura')">
+                            <div *ngFor="let item of result.validators['nivelCobertura']">{{ item.value }}</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Área Total Plantada </label>
+                          <input formControlName="areaTotal" class="form-control" type="number">
+                            <div class="invalid-feedback" *ngIf="invalid('areaTotal')">
+                            <div *ngFor="let item of result.validators['areaTotal']">{{ item.value }}</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Tipo de Cotação</label>
+                          <select formControlName="TipoCotacao" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="custeio">Custeio</option>
+                          </select>
+                            <div class="invalid-feedback" *ngIf="invalid('TipoCotacao')">
+                            <div *ngFor="let item of result.validators['TipoCotacao']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>Unid. Peso Cultivo</label>
+                          <select formControlName="unidadePesoCultivo" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="kg">Kg</option>
+                          </select>
+                           <div class="invalid-feedback" *ngIf="invalid('unidadePesoCultivo')">
+                            <div *ngFor="let item of result.validators['unidadePesoCultivo']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>V. Custeio Preço </label>
+                          <input formControlName="valorCusteio_Preco" class="form-control" type="number">
+                          <div class="invalid-feedback" *ngIf="invalid('valorCusteio_Preco')">
+                            <div *ngFor="let item of result.validators['valorCusteio_Preco']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>CEP</label>
+                          <input formControlName="cepAreaDeRisco" class="form-control" type="text">
+                            <div class="invalid-feedback" *ngIf="invalid('cepAreaDeRisco')">
+                            <div *ngFor="let item of result.validators['cepAreaDeRisco']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                        Salvar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>

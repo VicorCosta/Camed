@@ -1,0 +1,174 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div>
+                    <button class="btn btn-white" *ngIf="!viewOnly" type="button"
+                      (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div>
+                    <button class="btn btn-white" *ngIf="viewOnly" type="button"
+                      (click)="onClosePanel()">Voltar</button>
+                  </div>
+                  <div class="ml-2">
+                    <button [disabled]="loading" *ngIf="!viewOnly || respondendo" class="btn btn-primary ml-2"
+                      (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Enviar
+                    </button>
+                  </div>
+                  <div class="ml-2">
+                    <button class="btn btn-primary float-right" type="button"
+                      *ngIf="vizualizacaoRecebido&&inbox.usuarioRemetente != null" (click)="preparaGridResposta()">
+                      Responder
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div [style]="{width: '100%', height: '100%'}">
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <input type="hidden" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-12" *ngIf="viewOnly || respondendo">
+                      <div class="form-group ui-fluid" *ngIf="vizualizacaoRecebido && !respondendo">
+                        <label>Remetente</label>
+                        <br>
+                        <input type="text" placeholder="Remetente" formControlName="usuarioRemetente" [readonly]="true"
+                          class="form-control" [ngClass]="{ 'is-invalid': submitted && invalid('usuarioRemetente') }">
+                        <div class="invalid-feedback" *ngIf="invalid('usuarioRemetente')">
+                          <div *ngFor="let item of result.validators['usuarioRemetente']">
+                            {{item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group ui-fluid" *ngIf="!vizualizacaoRecebido || respondendo">
+                        <label>Destinatário</label>
+                        <br>
+                        <input type="text" placeholder="Destinatário" formControlName="usuarioDestinatario"
+                          [readonly]="true" class="form-control"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('usuarioDestinatario') }">
+                        <div class="invalid-feedback" *ngIf="invalid('usuarioDestinatario')">
+                          <div *ngFor="let item of result.validators['usuarioDestinatario']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12" *ngIf="!viewOnly && !respondendo">
+                      <div class="form-group">
+                        <label>Destinatário(s)</label>
+                        <br>
+                        <p-autoComplete #autoComplete class="formControl" [forceSelection]="true"
+                          (onFocus)="!autoComplete.value && autoComplete" dropdownMode="current"
+                          formControlName="usuariosDestinatarios" [suggestions]="usuarios"
+                          (completeMethod)="search($event)" placeholder="Destinatários" [multiple]="true" field="nome"
+                          [dropdown]="true">
+                        </p-autoComplete>
+                        <div class="invalid-feedback" *ngIf="invalid('destinatarios')">
+                          <div *ngFor="let item of result.validators['destinatarios']">{{ item.value}}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Assunto</label>
+                        <input type="text" placeholder="Assunto" [readonly]="viewOnly" class="form-control"
+                          formControlName="assunto" [ngClass]="{ 'is-invalid': submitted && invalid('assunto') }">
+                        <div class="invalid-feedback" *ngIf="invalid('assunto')">
+                          <div *ngFor="let item of result.validators['assunto']">{{ item.value}}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Texto</label>
+                        <textarea id="textoInput" placeholder="Texto" [readonly]="!respondendo && viewOnly"
+                          class="form-control" formControlName="texto"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('texto') }"></textarea>
+                        <div class="invalid-feedback" *ngIf="invalid('texto')">
+                          <div *ngFor="let item of result.validators['texto']">
+                            {{ item.value}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Número da Solicitação:</label>
+                        <p-autoComplete
+                            #autoComplete
+                            [(ngModel)]="solicitacaoSelecionada"
+                            [ngModelOptions]="{standalone: true}"
+                            [suggestions]="solicitacoes"
+                            maxlength="9"
+                            [delay]="0"
+                            (completeMethod)="searchSolicitacoes($event) "
+                            (onSelect)="setSolicitacao($event)"
+                            [forceSelection]="true"
+                            (onFocus)="!autoComplete.value && autoComplete" dropdownMode="current" dataKey="id"
+                            field="numero" class="formControl"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('solicitacoes') }"
+                        ></p-autoComplete>
+                      </div>
+                      <div class="invalid-feedback" *ngIf="invalid('solicitacoes')">
+                        <div *ngFor="let item of result.validators['solicitacoes']">{{ item.value }}</div>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: row; flex-wrap: wrap;" class="form-group"
+                      *ngIf="viewOnly&&anexosList.length > 0">
+                      <div *ngFor="let file of anexosList" class="row ml-3">
+                        <div class="text-weight-bold mt-1"><a class="btn btn-primary col-12"
+                            [href]="apiUrl + '/api/inbox/download?idArquivo=' + file.id">{{file.nome}}<span
+                              class="pl-2 fa fa-download" aria-hidden="true"></span></a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div *ngIf="anexosList.length < 1 &&viewOnly" class="form-group ml-3">
+                      <label>Sem anexos.</label>
+                    </div>
+                    <div class="col-md-12" *ngIf="respondendo || !viewOnly">
+                      <div class="form-group">
+                        <label>Anexos</label>
+                        <p-fileUpload #fileInput class="p-fileupload" name="files"
+                          invalidFileSizeMessageSummary="{0}: Tamanho de arquivo inválido, "
+                          invalidFileSizeMessageDetail="o tamanho máximo permitido é de {0}." [showUploadButton]="false"
+                          chooseLabel="Escolher" cancelLabel="Cancelar" (onSelect)="UploadFiles($event)"
+                          (onClear)="onClear()" (onRemove)="onRemove($event)" multiple="multiple" maxFileSize="1000000">
+                          <ng-template let-file pTemplate="files">
+                          </ng-template>
+                        </p-fileUpload>
+                        <div *ngFor="let file of uploadedFiles">
+                          <span class="col-4">{{file.nome}}</span><button type="button" class="btn btn-danger"
+                            (click)="onRemove(file.nome + file.extensao)">x</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,194 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 650px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div>
+                    <button class=" btn btn-white mr-4" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div>
+                    <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div [style]="{width: '100%', height: '500px'}">
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <input type="hidden" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-12 d-flex">
+
+
+                      <div class="form-group w-50 mr-4">
+                        <label>Ordem do Fluxo *</label>
+                        <input type="number" class="form-control" formControlName="ordemFluxo" min="0"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('ordemfluxo') }">
+                        <div class="invalid-feedback" *ngIf="invalid('ordemfluxo')">
+                          <div *ngFor="let item of result.validators['ordemfluxo']">{{ item.value }}</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group ui-fluid w-50">
+                        <label>Situação Atual *</label>
+                        <p-autoComplete #autoCompleteSituacaoAtual [(ngModel)]="situacaoAtualSelecionada"
+                          [ngModelOptions]="{standalone: true}" [suggestions]="situacoesAtuais" [minLength]="1"
+                          [delay]="0" (completeMethod)="searchSituacaoAtual($event)"
+                          (onSelect)="setSituacaoAtual($event)" [forceSelection]="true"
+                          (onFocus)="!autoCompleteSituacaoAtual.value && autoCompleteSituacaoAtual"
+                          dropdownMode="current" dataKey="id" field="nome" class="formControl"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('situacaoatual_id') }">
+                        </p-autoComplete>
+                        <div class="invalid-feedback" *ngIf="invalid('situacaoatual_id')" >
+                          <div *ngFor="let item of result.validators['situacaoatual_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 d-flex">
+                      <div class="form-group w-50 mr-4">
+                        <label>Ordem do Fluxo 2</label>
+                        <input type="number" class="form-control" formControlName="ordemFluxo2" min="0"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('ordemfluxo2') }">
+                        <div class="invalid-feedback" *ngIf="invalid('ordemfluxo2')">
+                          <div *ngFor="let item of result.validators['ordemfluxo2']">{{ item.value }}</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group ui-fluid w-50">
+                        <label>Ação *</label>
+                        <p-autoComplete #autoCompleteAcao [(ngModel)]="acaoSelecionada"
+                          [ngModelOptions]="{standalone: true}" [suggestions]="acoes" [minLength]="1" [delay]="0"
+                          (completeMethod)="searchAcoes($event)" (onSelect)="setAcao($event)" [forceSelection]="true"
+                          (onFocus)="!autoCompleteAcao.value && autoCompleteAcao" dropdownMode="current" dataKey="id"
+                          field="nome" class="formControl"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('acao_id') }">
+                        </p-autoComplete>
+                        <div class="invalid-feedback" *ngIf="invalid('acao_id')">
+                          <div *ngFor="let item of result.validators['acao_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 d-flex">
+                      <div class="form-group ui-fluid w-50 mr-4">
+                        <label>Próxima Situação *</label>
+                        <p-autoComplete #autoCompleteProximaSituacao [(ngModel)]="proximaSituacaoSelecionada"
+                          [ngModelOptions]="{standalone: true}" [suggestions]="proximasSituacoes" [minLength]="1"
+                          [delay]="0" (completeMethod)="searchProximaSituacao($event)"
+                          (onSelect)="setProximaSituacao($event)" [forceSelection]="true"
+                          (onFocus)="!autoCompleteProximaSituacao.value && autoCompleteProximaSituacao"
+                          dropdownMode="current" dataKey="id" field="nome" class="formControl"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('proximasituacao_id') }">
+                        </p-autoComplete>
+                        <div class="invalid-feedback" *ngIf="invalid('proximasituacao_id')">
+                          <div *ngFor="let item of result.validators['proximasituacao_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                      <div class="form-group ui-fluid w-50">
+                        <label>Grupo *</label>
+                        <p-autoComplete #autoCompleteGrupo [(ngModel)]="grupoSelecionado"
+                          [ngModelOptions]="{standalone: true}" [suggestions]="grupos" [minLength]="1" [delay]="0"
+                          (completeMethod)="searchGrupos($event)" (onSelect)="setGrupo($event)" [forceSelection]="true"
+                          (onFocus)="!autoCompleteGrupo.value && autoCompleteGrupo" dropdownMode="current" dataKey="id"
+                          field="nome" class="formControl"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('grupo_id') }">
+                        </p-autoComplete>
+                        <div class="invalid-feedback" *ngIf="invalid('grupo_id')">
+                          <div *ngFor="let item of result.validators['grupo_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['permiteEnvioDeArquivo']"
+                          label="Permitir envio de arquivo"></p-checkbox>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['exigeEnvioDeArquivo']"
+                          label="Exigir Envio de Anexo">
+                        </p-checkbox>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['exigeObservacao']"
+                          label="Exigir Observacao">
+                        </p-checkbox>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <p-checkbox binary="true" [formControl]="form.controls['enviaEmailSolicitanteAtendente']"
+                          label="Enviar email ao Solic. e ao Atend."></p-checkbox>
+                      </div>
+                    </div>
+                    <div class="d-flex col-md-12">
+                      <div class="form-group mr-2">
+                        <label>Enviar email ao Segurado</label>
+                      </div>
+                      <div class="form-group">
+                        <p-inputSwitch formControlName="enviaEmailAoSegurado"></p-inputSwitch>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="form.controls['enviaEmailAoSegurado'].value">
+                      <div class="form-group">
+                        <label>Modelo do email ao Segurado *</label>
+                        <select class="form-control" formControlName="parametrosSistema_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('parametrossistema_id') }">
+                          <option *ngFor="let item of (parametrosSistema$ | async)?.value" [ngValue]="item.id">{{
+                            item.parametro }}
+                          </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('parametrossistema_id')">
+                          <div *ngFor="let item of result.validators['parametrossistema_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 d-flex">
+                      <div class="form-group mr-3">
+                        <label>Enviar SMS ao Segurado</label>
+                      </div>
+                      <div class="form-group">
+                        <p-inputSwitch formControlName="enviaSMSAoSegurado"></p-inputSwitch>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="form.controls['enviaSMSAoSegurado'].value">
+                      <div class="form-group">
+                        <label>Modelo do SMS ao Segurado *</label>
+                        <select class="form-control" formControlName="parametroSistemaSMS_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('parametrosistemasms_id') }">
+                          <option *ngFor="let item of (parametrosSistema$ | async)?.value" [ngValue]="item.id">{{
+                            item.parametro }}
+                          </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('parametrosistemasms_id')">
+                          <div *ngFor="let item of result.validators['parametrosistemasms_id']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

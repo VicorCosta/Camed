@@ -1,0 +1,10 @@
+fieldset{
+  padding: 20px;
+  border: solid 1px lightgray;
+}
+legend{
+  color: gray;
+  font-size: 15px
+
+}
+

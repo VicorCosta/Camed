@@ -1,0 +1,174 @@
+<br>
+<div style="padding:2em" *ngFor="let item of impressao">
+  <div *ngIf="item.tpReg == 'LOG'">
+    <div class="row">
+      <div class="col-md-4" *ngIf="(item.eventTime | amDateFormat: 'DD/MM/YYYY - HH:mm') as dataHora">
+        <div class="form-group">
+          <label>Data/Hora</label>
+          <input class="form-control" type="text" value={{dataHora}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Usuário</label>
+          <input class="form-control" type="text" value={{item.userName}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Tipo</label>
+          <input class="form-control" type="text" value={{item.eventType}} disabled>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Detalhes:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>{{item.details}}</td>
+          </tbody>
+        </table>
+        <hr>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-md-4" *ngIf="(item.eventTime | amDateFormat: 'DD/MM/YYYY - HH:mm') as dataHora">
+        <div class="form-group">
+          <label>Data/Hora</label>
+          <input class="form-control" type="text" value={{dataHora}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Usuário</label>
+          <input class="form-control" type="text" value={{item.userName}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Tipo</label>
+          <input class="form-control" type="text" value={{item.eventType}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Tabela</label>
+          <input class="form-control" type="text" value={{item.tableName}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Chave</label>
+          <input class="form-control" type="text" value={{item.chave}} disabled>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Número da Solicitação</label>
+          <input class="form-control" type="text" value={{item.numeroDaSolicitacao}} disabled>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Coluna</th>
+              <th scope="col">Valor Original</th>
+              <th scope="col">Novo Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detalhe of detalhes">
+              <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.columnName}}</td>
+              <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.originalValue}}</td>
+              <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.newValue}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<div class="col-md-12 text-center">
+  <button pButton class="btn btn-md btn-primary text-center" printSectionId="imprimir" ngxPrint>Imprimir</button>
+</div>
+
+<div id="imprimir" style="visibility: hidden; text-align: center;">
+  <div *ngFor="let item of impressao">
+    <div *ngIf="item.tpReg == 'LOG'">
+      <div>
+        <div class="col-md-4" *ngIf="(item.eventTime | amDateFormat: 'DD/MM/YYYY - HH:mm') as dataHora">
+          <div>
+            <label>Data/Hora: {{dataHora}} </label>
+          </div>
+        </div>
+        <div>
+          <div>
+            <label>Usuário: {{item.userName}}</label>
+          </div>
+        </div>
+        <div>
+          <div>
+            <label>Tipo: {{item.eventType}}</label>
+          </div>
+        </div>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Detalhes:</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>{{item.details}}</td>
+            </tbody>
+          </table>
+          <hr>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="(item.eventTime | amDateFormat: 'DD/MM/YYYY - HH:mm') as dataHora">
+      <label>Data/Hora: {{dataHora}} </label>
+    </div>
+    <div>
+      <label>Usuário: {{item.userName}}</label>
+    </div>
+    <div>
+      <label>Tipo: {{item.eventType}}</label>
+    </div>
+    <div>
+      <label>Tabela: {{item.tableName}}</label>
+    </div>
+    <div>
+      <label>Chave: {{item.chave}}</label>
+    </div>
+    <div>
+      <label>Número da Solicitação: {{item.numeroSolicitacao}}</label>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Coluna</th>
+          <th>Valor Original</th>
+          <th>Novo Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let detalhe of detalhes">
+          <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.columnName}}</td>
+          <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.originalValue}}</td>
+          <td *ngIf="detalhe.auditLogId == item.id ">{{detalhe.newValue}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+  </div>
+</div>

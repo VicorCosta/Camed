@@ -1,0 +1,44 @@
+<div class="gray-bg">
+  <div class="loginColumns animated fadeInDown">
+    <div class="row login-row">
+      <div class="col-md-6 login-col-laranja">
+        <h1 class="ssc-login">SSC - Sistemas de Solicitações Camed</h1>
+      </div>
+      <div class="col-md-6 login-form">
+        <div class="ibox-content login-content">
+          <div class="camed-login text-center">
+            <img src="assets/img/Camed.png" alt="Camed" />
+          </div>
+
+          <div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="m-t form-inlin justify-content-center" role="form"
+            action="index.html" *ngIf="result$ | async as result">
+            <div class="form-group">
+              <input type="text" formControlName="username" class="form-control" placeholder="Login"
+                [ngClass]="{ 'is-invalid': submitted && invalid('username') }">
+              <div class="invalid-feedback" *ngIf="invalid('username')">
+                <div *ngFor="let item of result.validators['username']">{{ item.value }}</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="password" formControlName="password" class="form-control" placeholder="Senha"
+                [ngClass]="{ 'is-invalid': submitted && invalid('password') }" />
+              <div class="invalid-feedback" *ngIf="invalid('password')">
+                <div *ngFor="let item of result.validators['password']">{{ item.value }}</div>
+              </div>
+            </div>
+            <button [disabled]="loading" class="btn btn-primary block btn-login m-b">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+              Entrar
+            </button>
+
+            <a class="btn btn-sm btn-block" href="register.html">
+              Problemas com a senha?
+            </a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,219 @@
+<div>
+
+  <app-menu></app-menu>
+
+  <div id="page-wrapper" class="gray-bg">
+
+    <!-- NavHeader -->
+    <div class="row border-bottom">
+      <nav style="height: 61px;" class="navbar navbar-static-top white-bg" role="navigation">
+
+        <div class="navbar-header">
+          <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">
+            <i class="fa fa-bars"></i>
+          </a>
+        </div>
+
+        <div>
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+          <button type ="button" class="btn btn-primary" (click)="showDialog()" style="position:fixed;width:60px;height:60px;bottom:40px;right:40px;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+            z-index:1000;">
+            <i class="fa fa-exclamation"></i>
+          </button>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+          <li class="dropdown">
+            <app-user-notification></app-user-notification>
+          </li>
+
+          <li class="dropdown">
+            <app-user-profile></app-user-profile>
+          </li>
+        </ul>
+
+      </nav>
+    </div>
+    <!--/NavHeader-->
+
+    <!--Conteudo-->
+
+    <router-outlet></router-outlet>
+
+    <!--/Conteudo-->
+
+    <!--Footer-->
+    <!-- <div class="footer">
+      <div class="float-right">
+        Versão <strong>2.0</strong>
+      </div>
+      <div>
+        <strong>SSC</strong> - Sistema de Solicitação Camed
+      </div>
+    </div> -->
+    <!--/Footer-->
+
+  </div>
+
+</div>
+
+
+<app-help-page></app-help-page>
+
+<p-dialog [style]="{width: '70vw'}" header="Demandas com pendências" [(visible)]="display">
+  <h2>Demandas com pendências de avaliação</h2>
+  <p-table id="pendenciaAvLista" [value]="pendenciaAvLista" [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" scrollHeight="250px" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn style="font-size: small;">N° Solicitação</th>
+        <th pResizableColumn style="font-size: small;">Segurado</th>
+        <th pResizableColumn style="font-size: small;">Agência</th>
+        <th pResizableColumn style="font-size: small;">Agência Conta</th>
+        <th pResizableColumn style="font-size: small;">Situação Atual</th>
+        <th pResizableColumn style="font-size: small;">Tipo de Cancelamento</th>
+        <th pResizableColumn style="font-size: small;">Tipo de Seguro</th>
+        <th pResizableColumn style="font-size: small;">Atendente</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-solicitacao>
+      <tr>
+        <td (click)="avaliarAtendimento(solicitacao)" style="font-size: small;">{{solicitacao.numero}}</td>
+        <td style="font-size: small;">{{solicitacao.segurado?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.agencia?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.agenciaConta?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.situacaoAtual?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.tipoDeCancelamento?.descricao}}</td>
+        <td style="font-size: small;">{{solicitacao.tipoDeSeguro?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.atendente?.nome}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">Não há solicitações com pendência de avaliação</ng-template>
+  </p-table>
+
+  <br><br>
+
+  <h2>Demandas com pendências de ação</h2>
+  <p-table id="pendenciaAcaoLista" [value]="pendenciaAcaoLista" [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" scrollHeight="250px" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn style="font-size: small;">N° Solicitação</th>
+        <th pResizableColumn style="font-size: small;">Segurado</th>
+        <th pResizableColumn style="font-size: small;">Agência</th>
+        <th pResizableColumn style="font-size: small;">Agência Conta</th>
+        <th pResizableColumn style="font-size: small;">Situação Atual</th>
+        <th pResizableColumn style="font-size: small;">Tipo de Cancelamento</th>
+        <th pResizableColumn style="font-size: small;">Tipo de Seguro</th>
+        <th pResizableColumn style="font-size: small;">Atendente</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-solicitacao>
+      <tr>
+        <td (click)="abrirHistorico(solicitacao)" style="font-size: small;">{{solicitacao.numero}}</td>
+        <td style="font-size: small;">{{solicitacao.segurado?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.agencia?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.agenciaConta?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.situacaoAtual?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.tipoDeCancelamento?.descricao}}</td>
+        <td style="font-size: small;">{{solicitacao.tipoDeSeguro?.nome}}</td>
+        <td style="font-size: small;">{{solicitacao.atendente?.nome}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">Não há solicitações com pendência de ação</ng-template>
+  </p-table>
+</p-dialog>
+
+
+<div class="modal fade" id="avaliarSolicitacao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Avaliação de Atendimento</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <div id="half-stars-example">
+              <div (mouseout)="notaAtualAv()" class="rating-group">
+                <input [disabled]="disabled" class="rating__input rating__input--none" checked name="rating2"
+                  id="rating2--0" value="0" type="radio">
+                <label aria-label="0 stars" class="rating__label" for="rating2--0">&nbsp;</label>
+                <label (click)="notaParaAv(0.5)" (mouseover)="setNotaDinamica(0.5)" aria-label="0.5 stars"
+                  class="rating__label rating__label--half" for="rating2--05"><i
+                    class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--05" value="0.5"
+                  type="radio">
+                <label (click)="notaParaAv(1)" (mouseover)="setNotaDinamica(1)" aria-label="1 star"
+                  class="rating__label" for="rating2--10"><i
+                    class="rating__icon rating__icon--star fa fa-star"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--10" value="1"
+                  type="radio">
+                <label (click)="notaParaAv(1.5)" (mouseover)="setNotaDinamica(1.5)" aria-label="1.5 stars"
+                  class="rating__label rating__label--half" for="rating2--15"><i
+                    class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--15" value="1.5"
+                  type="radio">
+                <label (click)="notaParaAv(2)" (mouseover)="setNotaDinamica(2)" aria-label="2 stars"
+                  class="rating__label" for="rating2--20"><i
+                    class="rating__icon rating__icon--star fa fa-star"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--20" value="2"
+                  type="radio">
+                <label (click)="notaParaAv(2.5)" (mouseover)="setNotaDinamica(2.5)" aria-label="2.5 stars"
+                  class="rating__label rating__label--half" for="rating2--25"><i
+                    class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--25" value="2.5"
+                  type="radio" checked>
+                <label (click)="notaParaAv(3)" (mouseover)="setNotaDinamica(3)" aria-label="3 stars"
+                  class="rating__label" for="rating2--30"><i
+                    class="rating__icon rating__icon--star fa fa-star"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--30" value="3"
+                  type="radio">
+                <label (click)="notaParaAv(3.5)" (mouseover)="setNotaDinamica(3.5)" aria-label="3.5 stars"
+                  class="rating__label rating__label--half" for="rating2--35"><i
+                    class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--35" value="3.5"
+                  type="radio">
+                <label (click)="notaParaAv(4)" (mouseover)="setNotaDinamica(4)" aria-label="4 stars"
+                  class="rating__label" for="rating2--40"><i
+                    class="rating__icon rating__icon--star fa fa-star"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--40" value="4"
+                  type="radio">
+                <label (click)="notaParaAv(4.5)" (mouseover)="setNotaDinamica(4.5)" aria-label="4.5 stars"
+                  class="rating__label rating__label--half" for="rating2--45"><i
+                    class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--45" value="4.5"
+                  type="radio">
+                <label (click)="notaParaAv(5)" (mouseover)="setNotaDinamica(5)" aria-label="5 stars"
+                  class="rating__label" for="rating2--50"><i
+                    class="rating__icon rating__icon--star fa fa-star"></i></label>
+                <input [disabled]="disabled" class="rating__input" name="rating2" id="rating2--50" value="5"
+                  type="radio">
+              </div>
+              <p class="desc" style="margin-bottom: 2rem; font-family: sans-serif; font-size:0.9rem">Sua nota:<br />
+                {{notaDinamicaAv}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Motivo pelo qual você deu a nota acima:</label>
+            <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertObsAtendimento">'Campo de
+              Observação' é
+              Obrigatório.</h6>
+            <textarea [readOnly]="disabled" [(ngModel)]="obsDaAvaliacao" [ngModelOptions]="{standalone: true}"
+              class="form-control"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fechar
+        </button>
+        <button [disabled]="disabled" (click)="salvarAvSolicitacao()" type="button" class="btn btn-primary">
+          Enviar Nota
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

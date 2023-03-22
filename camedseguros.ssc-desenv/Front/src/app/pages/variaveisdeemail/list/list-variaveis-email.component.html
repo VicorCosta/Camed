@@ -1,0 +1,44 @@
+<app-header-page></app-header-page>
+
+<div class="wrapper wrapper-content">
+
+  <!-- <p-sidebar [(visible)]="display" position="right" [baseZIndex]="10000" styleClass="ui-sidebar-md">
+    <app-form-acoes (eventoConcluido)="handleEventoConcluido($event)" (closePanel)="handleClosePanel($event)"
+      [acao]="acaoSelecionada">
+    </app-form-acoes>
+  </p-sidebar>  -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+
+              <div class="ibox-tools">
+                <button type="text" (click)="openPanel()" pButton class="btn btn-sm btn-primary float-left m-t-n-xs"><i
+                    class="fa fa-plus"></i> Nova Variável de E-mail</button>
+              </div>
+            </div>
+            <div class="ibox-content" id="gird-container">
+
+              <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+
+              <div id="tabela">
+                <angular-slickgrid gridId="gridAcoes" [hidden]="loadingDataGrid && hasInitialLoading"
+                  [columnDefinitions]="columnDefinitions" [gridOptions]="gridOptions" [dataset]="dataset"
+                  (onAngularGridCreated)="angularGridReady($event.detail)">
+                </angular-slickgrid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <span>Carregando....</span>
+  </ng-template>
+
+</div>

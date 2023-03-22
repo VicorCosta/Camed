@@ -1,0 +1,198 @@
+<app-header-page></app-header-page>
+
+<div *ngIf="alertError" class="alert alert-danger mt-5 mb-0 ml-3 mr-4">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 750px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <!-- <div class="d-flex">
+                                    <div *ngIf="!viewOnly" class="d-flex mr-4">
+                                        <button [disabled]="loading" class="btn btn-primary ml-auto"
+                                            (click)="onSubmit()">
+                                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                            <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                                            Salvar
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-white ml-auto" type="button"
+                                            (click)="onClosePanel()">Cancelar</button>
+                                    </div>
+                                </div> -->
+              </div>
+              <div>
+                <table class="table" style="font-size: 16px;">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">N* Solicitacção</th>
+                      <th scope="col">Produto a ser cotado</th>
+                      <th scope="col">Segurado</th>
+                      <th scope="col">CPF/CNPJ/CEI</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngIf="solicitacao">{{solicitacao.numero}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.tipoDeProduto.nome}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.nome}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.cpfCnpj}}</td>
+                    </tr>
+                  </tbody>
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Vínculo com BNB</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Telefone</th>
+                      <th scope="col">Celular</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.vinculoBNB.nome}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.email}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.telefonePrincipal}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.telefoneCelular}}</td>
+                    </tr>
+                  </tbody>
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Outro</th>
+                      <th scope="col">É Renovação?</th>
+                      <th scope="col">Seguro Obrigatório?</th>
+                      <th scope="col">Orçamento Prévio?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.telefoneAdicional}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.tipoDeSeguro.nome}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segurado.email}}</td>
+                      <td *ngIf="solicitacao">NÃO CONDICIONADO</td>
+                    </tr>
+                  </tbody>
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Origem</th>
+                      <th scope="col">Segmento</th>
+                      <th scope="col">Produtor BNB</th>
+                      <th scope="col">Projeto CrossUP?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngIf="solicitacao">{{solicitacao.origem}}</td>
+                      <td *ngIf="solicitacao">{{solicitacao.segmento.nome}}</td>
+                      <td *ngIf="solicitacao">NÃO CONDICIONADO</td>
+                      <td *ngIf="solicitacao">NÃO CONDICIONADO</td>
+                    </tr>
+                  </tbody>
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Mercado?</th>
+                      <th scope="col">Participa de Campanha?</th>
+                      <th scope="col">Campanha</th>
+                      <th scope="col">Indicado por</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngIf="solicitacao">{{solicitacao.mercado}}</td>
+                      <td *ngIf="solicitacao">NÃO CONDICIONADO</td>
+                      <td *ngIf="solicitacao">NÃO CONDICIONADO</td>
+                      <td *ngIf="solicitacao">{{solicitacao.indicacoes}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <hr>
+              <br>
+              <br>
+              <div>
+                <br>
+                <br>
+                <table class="table table-hover" style="font-size: 14px;">
+                  <div style="width: 100%; display: inline-flex; background: #7B95A3; color: white">
+                    <div style="width: 90%; margin-left: 0.5%"><h3>Situação</h3></div>
+                    <div style="width:10%"><h3>Data/Hora</h3></div>
+                  </div>
+                  <tbody>
+                    <tr *ngFor="let acompanhamento of acompanhamentos">
+                      <th>
+                        <cdk-accordion class="filtros-accordion">
+                          <cdk-accordion-item *ngFor="let item of items; let index = index;"
+                            #accordionItem="cdkAccordionItem" class="example-accordion-item" role="button" tabindex="0"
+                            [attr.id]="'accordion-header-' + index" [attr.aria-expanded]="accordionItem.expanded"
+                            [attr.aria-controls]="'accordion-body-' + index">
+                            <div class="example-accordion-item-header" (click)="accordionItem.toggle()"
+                              style="width: 100%; display: inline-flex">
+                              <div style="width: 90%">
+                                {{acompanhamento.situacao_Id.nome}}<!-- Clique para {{ accordionItem.expanded ? 'fechar' : 'abrir' }} -->
+                              </div>
+                              <div style="width:10%;">
+                                {{acompanhamento.dataEHora | amDateFormat: "DD/MM/YYYY HH:mm"}}
+                              </div>
+                            </div>
+                            <div class="filtro-accordion-item-body" style="padding: 15px; background-color: white;"
+                              role="region" [style.display]="accordionItem.expanded ? '' : 'none'"
+                              [attr.id]="'accordion-body-' + index"
+                              [attr.aria-labelledby]="'accordion-header-' + index">
+                              <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="gridFIlter">
+                                <div class="form-group">
+                                  <div style="margin-top:1%">
+                                  <fieldset>
+                                    <legend><h3>Informações de Acompanhamento</h3></legend>
+                                    <div>
+                                      <div><label>Executante: {{ acompanhamento.atendente.nome }}</label></div>
+                                      <div><label>Data/Hora: {{ acompanhamento.dataEHora | amDateFormat: "DD/MM/YYYY HH:mm" }}</label></div>
+                                      <div>
+                                        <label>Observação:</label> <br>
+                                        <textarea  style="width: 100%">{{acompanhamento.observacao}}</textarea>
+                                      </div>
+                                      <div><Label>Anexos:</Label>{{ acompanhamento.anexo }}</div>
+                                    </div>
+                                  </fieldset>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </cdk-accordion-item>
+                        </cdk-accordion>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ibox-tools"
+        style="top: 8px; font-family: 'open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; display: flex; padding: 5px;">
+
+        <div id="btnAcompanhamento" visibility="visible">
+          <a routerLink="novoacompanhamento" queryParams="{{situacaoAtualId}}, {{solicitacaoId}}">
+            <button type="text" pButton class="btn btn-sm btn-primary float-left m-t-n-xs"><i class="fa fa-plus" style="
+                    margin-left: -3px;
+                    margin-bottom: -3px;
+                    padding: 4px;"></i>Novo Acompanhamento
+            </button>
+          </a>
+        </div>
+        <div style="margin-right: 5px;">
+          <button type="text" (click)="onClosePanel()" pButton class="btn btn-sm btn-secondary float-left m-t-n-xs"><i
+              style="
+                                  margin-left: -3px;
+                                  margin-bottom: -3px;
+                                  padding: 4px;"></i>Voltar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

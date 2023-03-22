@@ -1,0 +1,127 @@
+<app-header-page></app-header-page>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+              <div class="ibox-tools"></div>
+            </div>
+            <div class="ibox-content">
+
+              <div class="row">
+                <div class="col-md-3 m-b-xs">
+                  <div class="form-group ui-fluid autoComplete">
+                    <label>Agência*</label>
+                    <br>
+                    <p-autoComplete #autoComplete [(ngModel)]="agenciaSelecionada" [ngModelOptions]="{standalone: true}"
+                      [suggestions]="agencias" [minLength]="1" [delay]="0" (completeMethod)="searchAgencia($event)"
+                      (onSelect)="setAgencia($event)" [forceSelection]="true"
+                      (onFocus)="!autoComplete.value && autoComplete" dropdownMode="current" dataKey="id" field="nome"
+                      class="formControl"></p-autoComplete>
+                  </div>
+                </div>
+                <div class="col-md-3 m-b-xs">
+                  <div class="form-group">
+                    <label><input name="documento" type="radio" value="CPF" [(ngModel)]="documento"> CPF*</label>
+                    <span>&nbsp;&nbsp;</span>
+                    <label><input name="documento" type="radio" value="CNPJ" [(ngModel)]="documento"> CNPJ*</label>
+                    <span>&nbsp;&nbsp;</span>
+                    <label><input name="documento" type="radio" value="CEI" [(ngModel)]="documento"> CEI*</label>
+
+                    <p-inputMask *ngIf="documento === 'CPF'" [(ngModel)]="cpfcgc" placeholder="000.000.000-00"
+                      mask="999.999.999-99" styleClass="form-control">
+                    </p-inputMask>
+                    <p-inputMask *ngIf="documento === 'CNPJ'" [(ngModel)]="cpfcgc" placeholder="00.000.000/0000-00"
+                      mask="99.999.999/9999-99" styleClass="form-control">
+                    </p-inputMask>
+                    <p-inputMask *ngIf="documento === 'CEI'" [(ngModel)]="cpfcgc" placeholder="00.000.00000/00"
+                      mask="99.999.999/9999-99" styleClass="form-control">
+                    </p-inputMask>
+                  </div>
+                </div>
+                <div class="col-md-3 m-b-xs">
+                  <div class="form-group">
+                    <label>Tipo de solicitação</label>
+                    <select class="form-control" [(ngModel)]="tipoSolicitacao">
+                      <option value="">Selecione</option>
+                      <option value="Outros">Outros</option>
+                      <option value="Crediamigo">Crediamigo</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3 m-b-xs d-flex h-50">
+                  <button [disabled]="consultando" class="btn btn-primary float-right" style="margin-top: 2.1em;"
+                    (click)="consultar()">
+                    <span *ngIf="consultando" class="spinner-border spinner-border-sm mr-1"></span>
+                    <span *ngIf="!consultando" class="fa fa-search mr-1"></span>
+                    Consultar
+                  </button>
+                </div>
+              </div>
+              <label style="color: red;">
+                <strong>
+                  *Para as apólices com status de indisponível, gentileza enviar e-mail para:
+                  controlaemissao@camedseguros.com.br
+                </strong>
+              </label>
+              <div><span style="color: green;" class="fa fa-download"></span><strong style="margin-left: 5px">Arquivo
+                  disponivel</strong>
+                <span style="color: red; margin-left: 20px;" class="fa fa-download"></span> <strong
+                  style="margin-left: 5px">Arquivo Indisponivel</strong>
+              </div>
+              <table *ngIf="documentos" class="table table-striped" style="width: 100%; margin-top:20px;" [(ngModel)]="donwloadSelecionado">
+                <thead>
+                  <tr>
+                    <th>Segurado</th>
+                    <th>Seguradora</th>
+                    <th>Arq. Apolice</th>
+                    <th>Arq. Boleto</th>
+                    <th>Apólice</th>
+                    <th>Endosso</th>
+                    <th>Início da Vigência</th>
+                    <th>Fim da Vigência</th>
+                    <th>Importância Segurada</th>
+                    <th>Status</th>
+                    <th>Produto</th>
+                    <th>Seguro Obrigatório</th>
+                    <th>Operação</th>
+                    <th>Códigos do Bem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of documentos">
+                    <td>{{item.segurado}}</td>
+                    <td>{{item.seguradora}}</td>
+                    <td (click)="funcaoDownload(item.arquivoApolice)"><span [style.color]="checkDownload(item.arquivoApolice)" class="fa fa-download pointer"></span></td>
+                    <td (click)="funcaoDownload(item.arquivoBoleto)"><span [style.color]="checkDownload(item.arquivoBoleto)" class="fa fa-download pointer"></span></td>
+                    <td>{{item.apolice}}</td>
+                    <td>{{item.endosso}}</td>
+                    <td>{{item.iniciO_VIGENCIA}}</td>
+                    <td>{{item.fim_VIGENCIA}}</td>
+                    <td>{{item.importanciaSegurada}}</td>
+                    <td>{{item.status}}</td>
+                    <td>{{item.produto}}</td>
+                    <td style="text-align: center;">{{item.seguroobrigatorio}}</td>
+                    <td>{{item.operacao}}</td>
+                    <td>{{item.fim_VIGENCIA}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <span>Carregando....</span>
+  </ng-template>
+
+</div>

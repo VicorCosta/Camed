@@ -1,0 +1,90 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class=" d-flex">
+                  <div>
+                    <button class="btn btn-white mr-4" type="button" (click)="onClosePanel()">Cancelar</button>
+                  </div>
+                  <div>
+                    <button [disabled]="loading" class="btn btn-primary float-right" (click)="onSubmit()">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div [style]="{width: '100%', height: '500px'}">
+                <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                  <input type="hidden" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>País *</label>
+                        <select class="form-control" formControlName="pais">
+                          <option value="BR">Brasil</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('pais')">
+                          <div *ngFor="let item of result.validators['pais']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Estado *</label>
+                        <select class="form-control" formControlName="estado">
+                          <option value="CE">Ceará</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('estado')">
+                          <div *ngFor="let item of result.validators['estado']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Cidade *</label>
+                        <select class="form-control" formControlName="municipio">
+                          <option value=35>Fortaleza</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('municipio')">
+                          <div *ngFor="let item of result.validators['municipio']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-12">
+                            <label for="example-time-input">Data *</label>
+                            <input class="form-control" type="date" value="00-00-0000" formControlName="data">
+                            <div class="invalid-feedback" *ngIf="invalid('data')">
+                              <div *ngFor="let item of result.validators['data']">{{ item.value }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Descrição *</label>
+                        <input type="text" placeholder="Nome" class="form-control" formControlName="descricao"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('nome') }">
+                        <div class="invalid-feedback" *ngIf="invalid('descricao')">
+                          <div *ngFor="let item of result.validators['descricao']">{{ item.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<app-header-page></app-header-page>
+<p-toast></p-toast>
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+              <div class="ibox-tools"></div>
+            </div>
+            <div class="ibox-content">
+              <div>
+                <label>Informe aqui número da solicitação e a poisção do acompanhamento para ordem desejada</label>
+              </div>
+              <div class="row">
+                <div class="col-md-3 m-b-xs">
+                  <div class="form-group ui-fluid">
+                    <label>Número de solicitação*</label>
+                    <p-autoComplete #autoCompleteRetornoPosicao [suggestions]="solicitacoes"
+                      [(ngModel)]="solicitacaoSelecionaada" [minLength]="1" [delay]="0"
+                      (completeMethod)="searchSolicitacao($event)" (onSelect)="setSolicitacao($event)"
+                      [forceSelection]="true"
+                      (onFocus)="!autoCompleteRetornoPosicao.value && autoCompleteRetornoPosicao" dropdownMode="current"
+                      dataKey="id" field="numero" class="formControl"></p-autoComplete>
+                  </div>
+                </div>
+                <div class="col-md-3 m-b-xs">
+                  <div class="form-group ui-fluid">
+                    <label>Posição*</label>
+                    <div>
+                      <input name="posicao" type="number" [(ngModel)]="posicao" class="input" />
+                    </div>
+                  </div>
+                </div>
+
+                <div >
+                  <div class="mt-29">
+                    <button [disabled]="consultando" class="btn btn-primary float-right h-35" (click)="processar()">
+                      <span *ngIf="consultando" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!consultando" class="fa fa-search mr-1"></span>
+                      Processar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <table class="table table-striped" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Segurado</th>
+                    <th>Seguradora</th>
+                    <th>Arq. Apolice</th>
+                    <th>Arq. Boleto</th>
+                    <th>Apólice</th>
+                    <th>Parc. Pagas</th>
+                    <th>Endosso</th>
+                    <th>Início da Vigência</th>
+                    <th>Fim da Vigência</th>
+                    <th>Importância Segurada</th>
+                    <th>Status</th>
+                    <th>Produto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <span>Carregando....</span>
+  </ng-template>
+
+</div>

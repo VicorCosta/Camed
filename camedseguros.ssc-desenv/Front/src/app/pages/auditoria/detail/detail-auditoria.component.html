@@ -1,0 +1,57 @@
+<h2>{{ titulo }}</h2>
+<br>
+  <div style="padding:1em">
+    <div *ngIf="detalhes">
+      <div class="row">
+        <div class="col-md-12">
+          <button (click)="onClosePanel()" class="btn btn-primary float-right">
+            Voltar
+          </button>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Data/Hora</label>
+            <input class="form-control" type="text" value={{detalhes.dataHora}} disabled>
+          </div>
+          <div class="form-group">
+            <label>Usuário</label>
+            <input class="form-control" type="text" value={{detalhes.usuario}} disabled>
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <input class="form-control" type="text" value={{detalhes.tipo}} disabled>
+          </div>
+          <div class="form-group">
+            <label>Tabela</label>
+            <input class="form-control" type="text" value={{detalhes.tabela}} disabled>
+          </div>
+          <div class="form-group">
+            <label>Chave</label>
+            <input class="form-control" type="text" value={{detalhes.chave}} disabled>
+          </div>
+          <div class="form-group">
+            <label>Número da Solicitação</label>
+            <input class="form-control" type="text" value={{detalhes.numeroSolicitacao}} disabled>
+          </div>
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Coluna</th>
+                <th scope="col">Valor Original</th>
+                <th scope="col">Novo Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detalhe of auditdetalhes">
+                <td *ngIf="detalhe.auditLogId == detalhes.id ">{{detalhe.columnName}}</td>
+                <td *ngIf="detalhe.auditLogId == detalhes.id ">{{detalhe.originalValue}}</td>
+                <td *ngIf="detalhe.auditLogId == detalhes.id ">{{detalhe.newValue}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <br clear="all"><br><br>
+      </div>
+    </div>
+  </div>
+

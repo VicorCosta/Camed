@@ -1,0 +1,227 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div
+              style="min-height: 680px"
+              class="ibox-content"
+              id="gird-container"
+            >
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div>
+                    <button
+                      class="btn btn-white mr-4"
+                      type="button"
+                      (click)="onClosePanel()"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      [disabled]="loading"
+                      class="btn btn-primary float-right"
+                      (click)="onSubmit()"
+                    >
+                      <span
+                        *ngIf="loading"
+                        class="spinner-border spinner-border-sm mr-1"
+                      ></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div [style]="{ width: '100%', height: '750px' }">
+                <div class="row">
+                  <div class="row col-md-12">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label>Adicionar Menu Pai</label>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-inputSwitch
+                          (onChange)="checkedMenuPai($event)"
+                          [(ngModel)]="this.exibirMenuPai"
+                        >
+                        </p-inputSwitch>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="row col-md-12">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label>Adicionar Menu Filho</label>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <p-inputSwitch
+                          (onChange)="checkedMenuFilho($event)"
+                          [(ngModel)]="this.exibirMenuFilho"
+                        ></p-inputSwitch>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <form
+                  role="form"
+                  [formGroup]="form"
+                  (ngSubmit)="onSubmit()"
+                  *ngIf="result$ | async as result"
+                >
+                  <input type="hidden" formControlName="id" />
+                  <div class="row">
+                    <div *ngIf="exibirMenuPai" class="col-md-12">
+                      <div class="form-group">
+                        <label>Nome</label>
+                        <input
+                          type="text"
+                          placeholder="Nome"
+                          class="form-control"
+                          formControlName="label"
+                          [ngClass]="{
+                            'is-invalid': submitted && invalid('label')
+                          }"
+                        />
+                        <div class="invalid-feedback" *ngIf="invalid('label')">
+                          <div *ngFor="let item of result.validators['label']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <label>Ícone</label>
+                      <div style="width: 50%;">
+                        <p-orderList
+                          [value]="iconList"
+                          [(selection)]="iconSelected"
+                          filterBy="label"
+                          controlsPosition="right"
+                        >
+                        <ng-template let-icon pTemplate="item">
+                            <div class="ui-helper-clearfix">
+                              <span
+                                class="fa {{ icon.icon }}"
+                                style="
+                                  display: inline-block;
+                                  margin: 2px 0 2px 2px;
+                                "
+                                width="48"
+                              ></span>
+                              <div
+                                style="
+                                  font-size: 14px;
+                                  float: right;
+                                  margin: 15px 5px 0 0;
+                                "
+                              >
+                                {{ icon.label }}
+                              </div>
+                            </div>
+                          </ng-template>
+                        </p-orderList>
+                        <div class="invalid-feedback" *ngIf="invalid('icone')">
+                          <div *ngFor="let item of result.validators['icone']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="exibirMenuFilho" class="col-md-12">
+                      <div class="form-group">
+                        <label>Nome</label>
+                        <input
+                          type="text"
+                          placeholder="Nome"
+                          class="form-control"
+                          formControlName="label"
+                          [ngClass]="{
+                            'is-invalid': submitted && invalid('label')
+                          }"
+                        />
+                        <div class="invalid-feedback" *ngIf="invalid('label')">
+                          <div *ngFor="let item of result.validators['label']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Rota</label>
+                        <input
+                          type="text"
+                          placeholder="Exemplo: tipos-de-seguro"
+                          class="form-control"
+                          formControlName="rota"
+                          [ngClass]="{
+                            'is-invalid': submitted && invalid('rota')
+                          }"
+                        />
+                        <div class="invalid-feedback" *ngIf="invalid('rota')">
+                          <div *ngFor="let item of result.validators['rota']">
+                            {{ item.value }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Menu Pai</label>
+                        <br />
+                        <div *ngIf="menuSuperior$ | async as superior">
+                          <select
+                            class="form-control"
+                            formControlName="menuSuperior"
+                          >
+                            <option value="">Selecione</option>
+                            <option
+                              *ngFor="let menu of superior.value"
+                              [ngValue]="menu.id"
+                            >
+                              {{ menu.label }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Ações do Menu</label>
+                        <div class="itens">
+                          <div
+                            class="form-check"
+                            *ngFor="let tipo of (acoesMenu$ | async)?.value"
+                          >
+                            <p-checkbox
+                              name="acoes"
+                              [value]="tipo.id"
+                              [formControl]="form.controls['acoes']"
+                              label="{{ tipo.descricao }}"
+                            ></p-checkbox>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

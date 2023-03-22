@@ -1,0 +1,125 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div
+              style="min-height: 450px"
+              class="ibox-content"
+              id="gird-container"
+            >
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div>
+                    <button
+                      class="btn btn-white mr-4"
+                      type="button"
+                      (click)="onClosePanel()"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      [disabled]="loading"
+                      class="btn btn-primary float-right"
+                      (click)="onSubmit()"
+                    >
+                      <span
+                        *ngIf="loading"
+                        class="spinner-border spinner-border-sm mr-1"
+                      ></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 1em" *ngIf="appReady">
+                <form
+                  role="form"
+                  [formGroup]="form"
+                  (ngSubmit)="onSubmit()"
+                  *ngIf="result$ | async as result"
+                >
+                  <input type="hidden" formControlName="id" />
+                  <div class="row">
+                  
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group">
+                          <label>Tipo de Seguro</label>
+                          <select class="form-control" formControlName="tipoDeSeguro_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('tipodeseguro_id') }" id="">
+                          <option *ngFor="let seguro of (optionsTipoDeSeguro$ | async)?.value" [ngValue]="seguro.id">
+                            {{
+                              seguro.nome 
+                            }}
+                          </option>
+                          </select>
+                          <div class="invalid-feedback" *ngIf="invalid('tipodeseguro_id')">
+                            <div *ngFor="let item of result.validators['tipodeseguro_id']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group">
+                          <label>Ramo de Seguro</label>
+                          <select class="form-control" formControlName="tipoDeProduto_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('tipodeproduto_id') }" id="">
+                          <option *ngFor="let produto of (optionsTipoDeProduto$ | async)?.value" [ngValue]="produto.id">
+                            {{
+                              produto.nome 
+                            }}
+                          </option>
+                          </select>
+                          <div class="invalid-feedback" *ngIf="invalid('tipodeproduto_id')">
+                            <div *ngFor="let item of result.validators['tipodeproduto_id']">{{ item.value }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Texto/Html</label>
+                     <quill-editor 
+                     placeholder="Texto" 
+                     formControlName="texto" 
+                     [ngClass]="{
+                      'is-invalid': submitted && invalid('texto')
+                    }" 
+                    value="texto"  > </quill-editor>
+                      <div class="invalid-feedback" *ngIf="invalid('texto')">
+                        <div *ngFor="let item of result.validators['texto']">
+                          {{ item.value }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  </div>
+                </form>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

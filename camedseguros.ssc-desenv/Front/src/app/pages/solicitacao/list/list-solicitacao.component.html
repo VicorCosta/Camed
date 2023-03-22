@@ -1,0 +1,951 @@
+<app-header-page></app-header-page>
+
+<style>
+  input[type=file] {
+    display: block;
+    width: 350px;
+    max-width: 100%;
+    color: #444;
+    padding: 5px;
+    background: #fff;
+    border-radius: 10px;
+    border: 2px dashed rgb(116, 116, 116);
+  }
+
+  input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #f5a42a;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .1s ease-in-out;
+  }
+
+  input[type=file]::file-selector-button:hover {
+    background-color: #e08700;
+  }
+</style>
+
+<div class="wrapper wrapper-content">
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Novo Acompanhamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Ação:</label>
+              <select id="acao" style="
+                      display: block;
+                      color: black;
+                      width: 350px;
+                      height: 25px;
+                      border-color: #bdbdbd;
+                      font-size: 14px;
+                      -webkit-appearance: button;
+                      appearance: button;
+                      outline: none;" [(ngModel)]="dadosParaNovoAcompanhamento.Acao_Id"
+                [ngModelOptions]="{standalone: true}">
+                <option value="null"></option>
+                <option value="40">Aceitar Sinistro</option>
+                <option value="41">Informar Pendência de Documentação Sinistro</option>
+                <option value="53">Informar Pendência Proibitiva de Abertura</option>
+                <option value="65">Aguardar Conciliação</option>
+                <option value="68">Informar Pendência de Cadastro/Conciliação</option>
+                <option value="70">Prescrever Demanda</option>
+              </select>
+              <div style="visibility: hidden;" id="acaoSelectAlert" class="invalid-feedback">
+                'Ação' é obrigatório.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Observações:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div>
+            <div class="form-group">
+              <label style="position: relative; left: 32px;" class="col-form-label">Permite visualizar
+                observação:</label>
+              <input style="
+                    transform: scale(2);
+                    position: relative;
+                    left: -178px;" type="checkbox">
+            </div>
+            <div class="form-group">
+              <label style="position: relative; left: 32px;" class="col-form-label">Permite visualizar anexo:</label>
+              <input style="
+                    transform: scale(2);
+                    position: relative;
+                    left: -146px;" type="checkbox">
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Anexos:</label>
+              <p-fileUpload #fileUploader name="files"
+                invalidFileSizeMessageSummary="{0}: Tamanho de arquivo inválido, " [showUploadButton]="false"
+                chooseLabel="Escolher" cancelLabel="Cancelar" (onSelect)="UploadFiles($event)" (onClear)="onClear()"
+                multiple="multiple" maxFileSize="1000000">
+              </p-fileUpload>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <button id="enviar" type="button" class="btn btn-primary" (click)="enviarSolicitacao()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--
+    <p-sidebar [(visible)]="display" position="right" [baseZIndex]="10000" styleClass="ui-sidebar-md">
+        <app-form-solicitacao (eventoConcluido)="handleEventoConcluido($event)" (closePanel)="handleClosePanel($event)"
+            [solicitacao]="solicitacaoSelecionado"></app-form-solicitacao>
+    </p-sidebar> -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div class="ibox-title">
+              <!--<div class="ibox-tools" *ngIf="UsuarioAutorizado()">-->
+              <div *ngIf="permissaoCriarSolicitacao()" class="ibox-tools" style="top: 8px">
+                <a routerLink="form" class="btn btn-sm btn-primary rounded">
+                  <i class="fa fa-plus"> Nova Solicitação</i>
+                </a>
+              </div>
+            </div>
+
+            <!--Início Filtros Primários-->
+            <div style="min-height: 120px;" class="ibox-content" id="gird-container">
+              <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="gridFIlter" style="display: flex !important;
+              justify-items: stretch;
+              flex-wrap: wrap;
+              flex-direction: row;
+              align-content: flex-start;">
+                <div class="form-group">
+                  <label>Atendente:</label>
+                  <p-autoComplete #autoCompleteAg class="formControl" formControlName="atendente"
+                    [suggestions]="atendentes" [forceSelection]="true"
+                    (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true" [autofocus]="true"
+                    (completeMethod)="searchAtendentes($event)" field="nome">
+                  </p-autoComplete>
+                </div>
+
+                <div class="form-group">
+                  <label>N° Solicitação:</label>
+                  <input class="form-control inputCustom" type="number" formControlName="numeroSolicitacao" />
+                </div>
+
+                <div class="form-group">
+                  <label>Data Inicial:</label>
+                  <input class="form-control inputCustom" type="date" formControlName="dataInicial" />
+                </div>
+
+                <div class="form-group">
+                  <label>Data Final</label>
+                  <input class="form-control inputCustom" type="date" formControlName="dataFInal" />
+                </div>
+
+                <div class="form-group">
+                  <label>Tipo de Seguro:</label>
+                  <select class="form-control" formControlName="tipoSeguro">
+                    <option value="">Selecione</option>
+                    <option *ngFor="let tipoSeguro of (tipoSeguro | async)?.value" [ngValue]="tipoSeguro.id">
+                      {{ tipoSeguro.nome }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Status Situação:</label>
+                  <select class="form-control" formControlName="statusSituacao">
+                    <option value="">Selecione</option>
+                    <option value="interna">Pendência Interna</option>
+                    <option value="externa">Pendência Externa</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Situação:</label>
+                  <p-autoComplete #autoCompleteAg class="formControl" formControlName="situacao"
+                    [suggestions]="situacoes" [forceSelection]="true"
+                    (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                    (completeMethod)="searchSituacao($event)" field="nome">
+                  </p-autoComplete>
+                </div>
+
+                <div class="d-flex">
+                  <div class="form-group w-100 textAlingCenter">
+                    <label style="width: 100px;">Em Processo:</label>
+                    <input class="form-control inputCustom" type="checkbox" formControlName="emProcesso" />
+                  </div>
+
+                  <div class="form-group w-100 textAlingCenter">
+                    <label>Em Atraso:</label>
+                    <input class="form-control inputCustom" type="checkbox" formControlName="emAtraso" />
+                  </div>
+                </div>
+              </form>
+              <div>
+                <strong><span style="color:red">*Para os campos: Número de Solicitação, Nome do Segurado e CNPJ/CPF/CEI,
+                    não será preciso informar o intervalo de datas
+                    na consulta.</span></strong>
+              </div>
+            </div>
+            <!--Fim Filtros Primários-->
+
+            <!--Inicio do Acordion-->
+            <div style="min-height: 50px;" class="ibox-content">
+              <cdk-accordion class="filtros-accordion">
+                <cdk-accordion-item *ngFor="let item of items; let index = index;" #accordionItem="cdkAccordionItem"
+                  class="example-accordion-item" role="button" tabindex="0" [attr.id]="'accordion-header-' + index"
+                  [attr.aria-expanded]="accordionItem.expanded" [attr.aria-controls]="'accordion-body-' + index">
+                  <div class="example-accordion-item-header" (click)="accordionItem.toggle()">
+                    {{ item }}
+                    <span class="example-accordion-item-description">
+                      Clique para {{ accordionItem.expanded ? 'fechar' : 'abrir' }}
+                    </span>
+                  </div>
+                  <div class="filtro-accordion-item-body" style="padding: 15px; background-color: white;" role="region"
+                    [style.display]="accordionItem.expanded ? '' : 'none'" [attr.id]="'accordion-body-' + index"
+                    [attr.aria-labelledby]="'accordion-header-' + index">
+                    <form role="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="gridFIlter">
+                      <div class="form-group">
+                        <label>Listar:</label>
+                        <select class="form-control" formControlName="listar">
+                          <option value="">Selecione</option>
+                          <option value="renovacao">Renovação</option>
+                          <option value="outros">Outros</option>
+                        </select>
+                      </div>
+                      <!--
+                    <div class="form-group">
+                      <label>Atendente:</label>
+                      <p-autoComplete #autoCompleteAg class="formControl" formControlName="atendente"
+                        [suggestions]="atendentes" [forceSelection]="true"
+                        (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                        (completeMethod)="searchAtendentes($event)" field="nome">
+                      </p-autoComplete>
+                    </div>
+
+                    <div class="form-group">
+                      <label>N° Solicitação:</label>
+                      <input class="form-control inputCustom" type="number" formControlName="numeroSolicitacao" />
+                    </div>
+                    <div class="form-group">
+                      <label>Canal de Distribuição:</label>
+                      <select class="form-control" formControlName="canalDistribuicao">
+                        <option *ngFor="
+                            let canalDistribuicao of (canalDistribuicao | async)
+                              ?.value
+                          " [ngValue]="canalDistribuicao.id">
+                          {{ canalDistribuicao.nome }}
+                        </option>
+                      </select>
+                    </div>
+                    -->
+                      <div class="form-group">
+                        <label>Segurado:</label>
+                        <input class="form-control inputCustom" type="text" formControlName="segurado" />
+                      </div>
+
+                      <div class="form-group">
+                        <label>Tipo Cancelamento:</label>
+                        <select class="form-control" formControlName="tipoCancelamento">
+                          <option value="">Selecione</option>
+                          <option *ngFor="
+                            let tiposCancelamento of (tiposCancelamento | async)
+                              ?.value
+                          " [ngValue]="tiposCancelamento.descricao">
+                            {{ tiposCancelamento.descricao }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <!--
+                    <div class="form-group">
+                      <label>Data Inicial:</label>
+                      <input class="form-control inputCustom" type="date" formControlName="dataInicial" />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Data Final</label>
+                      <input class="form-control inputCustom" type="date" formControlName="dataFInal" />
+                    </div>
+
+
+                    <div class="form-group">
+                      <label>Tipo de Seguro:</label>
+                      <select class="form-control" formControlName="tipoSeguro">
+                        <option *ngFor="let tipoSeguro of (tipoSeguro | async)?.value" [ngValue]="tipoSeguro.id">
+                          {{ tipoSeguro.nome }}
+                        </option>
+                      </select>
+                    </div>
+                    -->
+
+                      <div class="form-group">
+                        <label>Ramo de Seguro:</label>
+                        <select class="form-control" formControlName="ramoDeSeguro">
+                          <option value="">Selecione</option>
+                          <option *ngFor="
+                            let tiposDeProduto of (tiposDeProduto | async)?.value
+                          " [ngValue]="tiposDeProduto.id">
+                            {{ tiposDeProduto.nome }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Seguradora:</label>
+                        <p-autoComplete #autoCompleteAg class="formControl" formControlName="seguradora"
+                          [suggestions]="vwSeguradora" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchSeguradora($event)" field="nm_Seguradora">
+                        </p-autoComplete>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Área de Negócio:</label>
+                        <select class="form-control" formControlName="areaDeNegocio">
+                          <option value="">Selecione</option>
+                          <option *ngFor="
+                            let areaDeNegocio of (areaDeNegocio | async)?.value
+                          " [ngValue]="areaDeNegocio.id">
+                            {{ areaDeNegocio.nome }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label> Vinculo BNB:</label>
+                        <select class="form-control" formControlName="vinculoBnb">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let vinculosBNB of (vinculosBNB | async)?.value" [ngValue]="vinculosBNB.id">
+                            {{ vinculosBNB.nome }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label>CNPJ/CPF/CEI:</label>
+                        <input class="form-control inputCustom" type="text" formControlName="cnpj" />
+                      </div>
+
+                      <div class="form-group">
+                        <label>Observação:</label>
+                        <input class="form-control inputCustom" type="text" formControlName="observacao" />
+                      </div>
+
+                      <div class="form-group">
+                        <label>Nº da Proposta:</label>
+                        <input class="form-control inputCustom" type="number" formControlName="numProposta" />
+                      </div>
+
+                      <div class="form-group">
+                        <label>Superintendência:</label>
+                        <p-autoComplete #autoCompleteAg class="formControl" formControlName="superintendencia"
+                          [suggestions]="superintendencias" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchSuperitendencia($event)" field="super">
+                        </p-autoComplete>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Super Conta:</label>
+                        <p-autoComplete #autoCompleteAg class="formControl" formControlName="superConta"
+                          [suggestions]="superContas" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchSuperContas($event)" field="super">
+                        </p-autoComplete>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Agência:</label>
+                        <p-autoComplete #autoCompleteAg class="formControl" formControlName="agencia"
+                          [suggestions]="agencias" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchAgecias($event)" field="nome">
+                        </p-autoComplete>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Agência Conta:</label>
+                        <p-autoComplete #autoCompleteAg class="formControl" formControlName="agenciaConta"
+                          [suggestions]="agenciasConta" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchAgeciasConta($event)" field="nome">
+                        </p-autoComplete>
+                      </div>
+
+                      <!--
+                    <div class="form-group">
+                      <label>Status Situação:</label>
+                      <select class="form-control" formControlName="statusSituacao">
+                        <option value="Selecione">Selecione</option>
+                        <option value="interna">Pendência Interna</option>
+                        <option value="externa">Pendência Externa</option>
+                      </select>
+                    </div>
+                    -->
+                      <!--
+                    <div class="form-group">
+                      <label>Situação:</label>
+                      <p-autoComplete #autoCompleteAg class="formControl" formControlName="situacao"
+                        [suggestions]="situacoes" [forceSelection]="true"
+                        (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                        (completeMethod)="searchSituacao($event)" field="nome">
+                      </p-autoComplete>
+                    </div>
+                    -->
+                      <!--
+                    <div class="d-flex">
+                      <div class="form-group w-50 textAlingCenter">
+                        <label>Em Processo:</label>
+                        <input class="form-control inputCustom" type="checkbox" formControlName="emProcesso" />
+                      </div>
+
+                      <div class="form-group w-50 textAlingCenter">
+                        <label>Em Atraso:</label>
+                        <input class="form-control inputCustom" type="checkbox" formControlName="emAtraso" />
+                      </div>
+                    </div>
+                  -->
+                    </form>
+                  </div>
+                </cdk-accordion-item>
+              </cdk-accordion>
+              <!--Fim do Accordion-->
+
+              <div style="min-height: 50px;  margin-top: 10px; text-align: right ">
+                <button (click)="ClearFields()" class="btn btn-secondary ml-auto"
+                  style="margin-bottom: 8px; display: inline-block">Limpar Filtros</button>
+                <div style="margin-left: 5px; display: inline-block">
+                  <button style="display: inline-block; margin-bottom: 8px;" class="btn btn-success ml-auto"
+                    (click)="onSubmit()">
+                    Filtrar Demandas
+                  </button>
+                </div>
+              </div>
+
+              <!--Inicio dos filtros secundários-->
+              <div style="min-height: 450px;" class="ibox-content" id="gird-container">
+
+                <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+
+                <div id="tabela">
+                  <angular-slickgrid gridId="gridSolicitacao" gridHeight="350"
+                    [hidden]="loadingDataGrid && hasInitialLoading" [columnDefinitions]="columnDefinitions"
+                    [gridOptions]="gridOptions" [dataset]="dataset"
+                    (onAngularGridCreated)="angularGridReady($event.detail)">
+                  </angular-slickgrid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #loading>
+      <div>Carregando....</div>
+    </ng-template>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="agendamentoLigacaoModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Histórico de Agenciamentos de Ligação</h5>
+          <h5 class="modal-title" style="margin-left: 50%" id="agendamentoLigacaoModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Data do Agendamento</th>
+                <th scope="col">Motivo</th>
+                <th scope="col">Retorno</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let agendamento of agendamentosDeLigacao">
+                <td>
+                  {{ agendamento.dataAgendamento | amDateFormat: "DD-MM-YYYY" }}
+                </td>
+                <td>{{ agendamento.motivo }}</td>
+                <td>
+                  <button (click)="retornoAgendamento()" *ngIf="mostrarBotaoRetornoLigacao()"
+                    class="btn btn-primary">Retorno</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+          </button>
+          <button (click)="NovoAgendamento()" type="button" id="novoAgendamento" class="btn btn-primary">
+            Novo Agendamento de Ligação
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="atribuirOperador" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Atribuição de Operador</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label class="col-form-label">Área de Negócio:</label>
+              <select class="form-control" [(ngModel)]="areaDeNegocioSelecionada" [ngModelOptions]="{standalone: true}">
+                <option value=""></option>
+                <option *ngFor="let area of areasDeNegocios" value={{area.value}}>
+                  {{ area.label }}
+                </option>
+              </select>
+              <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertArea">'Área de Negócio' é
+                Obrigatório.</h6>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Atendente:</label>
+              <p-autoComplete [(ngModel)]="atendenteSelecionado" [ngModelOptions]="{standalone: true}" #autoCompleteAg
+                class="formControl" [suggestions]="atendentes" [forceSelection]="true"
+                (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                (completeMethod)="searchAtendentes($event)" field="nome">
+              </p-autoComplete>
+              <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertAtendente">'Atendente' é
+                Obrigatório.</h6>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+          </button>
+          <button (click)="salvarAtendente()" type="button" id="novoAgendamento" class="btn btn-primary">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="avaliarAtendimento" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Avaliação de Atendimento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <div id="half-stars-example">
+                <div (mouseout)="notaAtual()" class="rating-group">
+                  <input [disabled]="isDisabled" class="rating__input rating__input--none" checked name="rating2"
+                    id="rating2-0" value="0" type="radio">
+                  <label aria-label="0 stars" class="rating__label" for="rating2-0">&nbsp;</label>
+                  <label (click)="notaParaAtendimento(0.5)" (mouseover)="setNotaDinamica(0.5)" aria-label="0.5 stars"
+                    class="rating__label rating__label--half" for="rating2-05"><i
+                      class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-05" value="0.5"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(1)" (mouseover)="setNotaDinamica(1)" aria-label="1 star"
+                    class="rating__label" for="rating2-10"><i
+                      class="rating__icon rating__icon--star fa fa-star"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-10" value="1"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(1.5)" (mouseover)="setNotaDinamica(1.5)" aria-label="1.5 stars"
+                    class="rating__label rating__label--half" for="rating2-15"><i
+                      class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-15" value="1.5"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(2)" (mouseover)="setNotaDinamica(2)" aria-label="2 stars"
+                    class="rating__label" for="rating2-20"><i
+                      class="rating__icon rating__icon--star fa fa-star"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-20" value="2"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(2.5)" (mouseover)="setNotaDinamica(2.5)" aria-label="2.5 stars"
+                    class="rating__label rating__label--half" for="rating2-25"><i
+                      class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-25" value="2.5"
+                    type="radio" checked>
+                  <label (click)="notaParaAtendimento(3)" (mouseover)="setNotaDinamica(3)" aria-label="3 stars"
+                    class="rating__label" for="rating2-30"><i
+                      class="rating__icon rating__icon--star fa fa-star"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-30" value="3"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(3.5)" (mouseover)="setNotaDinamica(3.5)" aria-label="3.5 stars"
+                    class="rating__label rating__label--half" for="rating2-35"><i
+                      class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-35" value="3.5"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(4)" (mouseover)="setNotaDinamica(4)" aria-label="4 stars"
+                    class="rating__label" for="rating2-40"><i
+                      class="rating__icon rating__icon--star fa fa-star"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-40" value="4"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(4.5)" (mouseover)="setNotaDinamica(4.5)" aria-label="4.5 stars"
+                    class="rating__label rating__label--half" for="rating2-45"><i
+                      class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-45" value="4.5"
+                    type="radio">
+                  <label (click)="notaParaAtendimento(5)" (mouseover)="setNotaDinamica(5)" aria-label="5 stars"
+                    class="rating__label" for="rating2-50"><i
+                      class="rating__icon rating__icon--star fa fa-star"></i></label>
+                  <input [disabled]="isDisabled" class="rating__input" name="rating2" id="rating2-50" value="5"
+                    type="radio">
+                </div>
+                <p class="desc" style="margin-bottom: 2rem; font-family: sans-serif; font-size:0.9rem">Sua nota:<br />
+                  {{notaDinamica}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Motivo pelo qual você deu a nota acima:</label>
+              <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertObsAtendimento">'Campo de
+                Observação' é
+                Obrigatório.</h6>
+              <textarea [readOnly]="isDisabled" [(ngModel)]="obsAvAtendimento" [ngModelOptions]="{standalone: true}"
+                class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+          </button>
+          <button [disabled]="isDisabled" (click)="salvarAvAtendimento()" type="button" class="btn btn-primary">
+            Enviar Nota
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="atribuirAtendente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Atribuição de Atendente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label class="col-form-label">Área de Negócio:</label>
+              <select class="form-control" [(ngModel)]="areaDeNegocioSelecionada" [ngModelOptions]="{standalone: true}">
+                <option value=""></option>
+                <option *ngFor="let area of areasDeNegocios" value={{area.value}}>
+                  {{ area.label }}
+                </option>
+              </select>
+              <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertArea">'Área de Negócio' é
+                Obrigatório.</h6>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label">Atendente:</label>
+              <p-autoComplete [(ngModel)]="atendenteSelecionado" [ngModelOptions]="{standalone: true}" #autoCompleteAg
+                class="formControl" [suggestions]="atendentes" [forceSelection]="true"
+                (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                (completeMethod)="searchAtendentes($event)" field="nome">
+              </p-autoComplete>
+              <h6 style="color: red; margin-top: 10px; visibility: hidden;" id="alertAtendente">'Atendente' é
+                Obrigatório.</h6>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+          </button>
+          <button (click)="salvarAtendente()" type="button" id="novoAgendamento" class="btn btn-primary">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Histórico de Acompanhamento</h5>
+          <h5 class="modal-title" style="margin-left: 50%" id="agendamentoLigacaoModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <tr>
+              <td colspan="2">Número da Solicitação:</td>
+              <td colspan="2" id="numero"></td>
+            </tr>
+            <tr>
+              <td colspan="2">Produto a ser cotado:</td>
+              <td colspan="2" id="tipoDeProdutoNome"></td>
+            </tr>
+            <tr>
+              <td colspan="2">Segurado:</td>
+              <td colspan="2" id="seguradoNome"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">CPF/CNPJ/CEI:</td>
+              <td colspan="2" id="seguradoCpfCnpj"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">Vínculo BNB:</td>
+              <td colspan="2" id="seguradoVinculoBNBNome"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">Email:</td>
+              <td colspan="2" id="seguradoEmail"></td>
+            </tr>
+
+            <tr>
+              <td>Telefone:</td>
+              <td id="seguradoTelefonePrincipal"></td>
+
+              <td>Celular:</td>
+              <td id="seguradoTelefoneCelular"></td>
+
+              <td>Outro:</td>
+              <td id="seguradoTelefoneAdicional"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">Seguro Obrigatório:</td>
+              <td colspan="2" id="operacaoDeFinanciamento"></td>
+            </tr>
+
+            <tr>
+              <td>Origem:</td>
+              <td id="origem"></td>
+
+              <td>Orçamento Prévio:</td>
+              <td id="orcamentoPrevio"></td>
+            </tr>
+
+            <tr>
+              <td>Segmento:</td>
+              <td id="segmentoNome"></td>
+
+              <td>Produtor BNB:</td>
+              <td id="produtorNome"></td>
+            </tr>
+
+            <tr>
+              <td>Projeto CrossUP:</td>
+              <td id="CrossUP"></td>
+
+              <td>Mercado:</td>
+              <td id="mercado"></td>
+            </tr>
+
+            <tr>
+              <td>Participa de Campanha:</td>
+              <td id="participaCampanha">?</td>
+
+              <td>Campanha e Indicado por:</td>
+              <td id="indicacoes"></td>
+            </tr>
+
+            <tr>
+              <td>Seguradora:</td>
+              <td id="seguradora"></td>
+
+              <td>Ramo:</td>
+              <td id="ramo_Id"></td>
+            </tr>
+
+            <tr>
+              <td>Nº da Proposta:</td>
+              <td id="num_Proposta_Seguradora"></td>
+
+              <td>Tipo de Seguro:</td>
+              <td id="tipoDeSeguroNome"></td>
+            </tr>
+
+            <tr>
+              <td>N° da Proposta Anterior:</td>
+              <td id="nu_Apolice_Anterior"></td>
+
+              <td>Comissão (%):</td>
+              <td id="pc_comissao"></td>
+            </tr>
+            <tr>
+              <td colspan="2">Co_Corretagem Camed (%):</td>
+              <td colspan="2" id="co_Corretagem"></td>
+            </tr>
+
+            <tr>
+              <td>Agenciamento(%):</td>
+              <td id="pc_agenciamento"></td>
+
+              <td>VL_IS:</td>
+              <td id="vL_IS"></td>
+            </tr>
+
+            <tr>
+              <td>Forma de Pgto 1ª:</td>
+              <td id="FL_Forma_Pagamento_1a_Id"></td>
+
+              <td>Forma de Pgto Demais:</td>
+              <td id="FL_Forma_Pagamento_Demais_Id"></td>
+            </tr>
+            <tr>
+              <td>SEDE Envia Doc. Físico:</td>
+              <td id="Sede_Envia_Doc_Fisico"></td>
+
+              <td>Segurado VIP:</td>
+              <td id="vip"></td>
+            </tr>
+
+            <tr>
+              <td>Vistoria necessária:</td>
+              <td id="vistorianec"></td>
+
+              <td>Rastreador:</td>
+              <td id="rastreador"></td>
+            </tr>
+
+            <tr>
+              <td>Rechaço:</td>
+              <td id="rechaco"></td>
+
+              <td>Grupo de Produção:</td>
+              <td id="grupoDeProducao_Id"></td>
+            </tr>
+
+            <tr>
+              <td>Cadastrado no GS:</td>
+              <td id="cadastro_GS"></td>
+
+              <td>N° do Estudo:</td>
+              <td id="cd_Estudo"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2">Situação</td>
+              <td colspan="2">
+                <a (click)="onSave()" id="situacaoAtualNome"></a>
+              </td>
+            </tr>
+          </table>
+
+          <div id="trExecutante" class="exibir">
+            <table>
+              <tbody>
+                <tr>
+                  <td colspan="2">Executante:</td>
+                  <td colspan="2" id="atendenteNome"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Data/Hora:</td>
+                  <td colspan="2" id="dataDeIngresso"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Observação:</td>
+                  <td colspan="2" id="cd_Estudo"></td>
+                </tr>
+
+                <tr>
+                  <td colspan="2">Anexos:</td>
+                  <td colspan="2" *ngFor="let anexo of anexosSolicitacao">
+                    <label>{{ anexo.nome }}</label>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>
+                    <button class="btn btn-primary" id="NovoAcompanhamento">
+                      Novo Acompanhamento
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-primary" id="checkList">
+                      checkList
+                    </button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="modalCheck" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Número da Solicitação: <label id="numeroSol"></label>
+          </h5>
+          <h5 class="modal-title" style="margin-left: 50%" id="agendamentoLigacaoModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Documento</th>
+                <th>Arquivo</th>
+                <th>Recebido</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let anexo of anexosSolicitacao">
+                <td>{{ anexo.tipodedocumento }}</td>
+                <td>{{ anexo.nome }}</td>
+                <td><input type="checkbox" checked /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,17 @@
+.itens {
+    width: 97.5%;
+    height: 106px;
+    overflow-y: scroll;
+    padding: 0 16px;
+    font-size: 12px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+}
+
+p-checkbox {
+  display: initial !important;
+  vertical-align: text-bottom;
+  align-items: center;
+}

@@ -1,0 +1,31 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul class="nav metismenu" id="side-menu" #sideMenu>
+      <li class="nav-header">
+        <div class="profile-element">
+          <img alt="Camed" src="assets/img/camed-logo.png" />
+        </div>
+      </li>
+
+      <li *ngFor="let menu of (menus | async); let lastMenu = last" [class.active]="menu.active">
+        <a *ngIf="menu.submenus.length === 0" [routerLink]="[menu.rota]" (click)="setMenuAtivo(menu)">
+          <i class="fa {{ menu.icone }}"></i>
+          <span class="nav-label">{{ menu.label }}</span>
+        </a>
+
+        <a *ngIf="menu.submenus.length > 0" href="#">
+          <i class="fa {{ menu.icone }}"></i>
+          <span class="nav-label">{{ menu.label }}</span>
+          <span *ngIf="menu.submenus.length > 0" class="fa arrow"></span>
+        </a>
+
+        <ul class="nav nav-second-level collapse" *ngIf="menu.submenus.length > 0">
+          <li *ngFor="let submenu of menu.submenus" [class.active]="submenu.active">
+            <a [routerLink]="[submenu.rota]" routerLinkActive="router-link-active" (click)="setMenuAtivo(submenu)">{{ submenu.label }}</a>
+          </li>
+        </ul>
+        <span *ngIf="lastMenu">{{startMetisMenu()}}</span>
+      </li>
+    </ul>
+  </div>
+</nav>

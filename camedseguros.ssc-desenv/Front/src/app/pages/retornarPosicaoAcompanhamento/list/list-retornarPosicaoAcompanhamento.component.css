@@ -1,0 +1,26 @@
+.input {
+    width: 100%;
+    padding: 0.429rem 0.429rem;
+    border: 1px solid #dadada;
+    font-size: 1rem;
+}
+
+.input:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #e4e9ec;
+    border-color: #7B95A3;
+}
+
+/* .alignSelf {
+    align-self: center;
+    height: 100%;
+} */
+
+.h-35{
+    height: 35px;
+}
+
+.mt-29{
+    margin-top: 29%;
+}

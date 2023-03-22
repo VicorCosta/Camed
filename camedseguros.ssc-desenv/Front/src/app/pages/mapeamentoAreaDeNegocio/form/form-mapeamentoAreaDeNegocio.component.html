@@ -1,0 +1,177 @@
+<app-header-page></app-header-page>
+
+<p-toast></p-toast>
+
+<div *ngIf="alertError" class="alert alert-danger mt-3 mb-0">
+  {{ alertError }}
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div
+              style="min-height: 450px"
+              class="ibox-content"
+              id="gird-container"
+            >
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+                <div class="d-flex">
+                  <div>
+                    <button
+                      class="btn btn-white mr-4"
+                      type="button"
+                      (click)="onClosePanel()"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      [disabled]="loading"
+                      class="btn btn-primary float-right"
+                      (click)="onSubmit()"
+                    >
+                      <span
+                        *ngIf="loading"
+                        class="spinner-border spinner-border-sm mr-1"
+                      ></span>
+                      <span *ngIf="!loading" class="fa fa-save mr-1"></span>
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 1em" *ngIf="appReady">
+                <form
+                  role="form"
+                  [formGroup]="form"
+                  (ngSubmit)="onSubmit()"
+                  *ngIf="result$ | async as result"
+                >
+                  <input type="hidden" formControlName="id" />
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Tipo de Agência *</label>
+                          <select class="form-control" formControlName="tipoDeAgencia_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('tipoDeAgencia_id') }" id="">
+                          <option *ngFor="let item of (optionsTipoDeAgencia$ | async)?.value" [ngValue]="item.id">
+                            {{
+                              item.nome 
+                            }}
+                          </option>
+
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('tipodeagencia_id')">
+                          <div *ngFor="let item of result.validators['tipodeagencia_id']">{{ item.value }}</div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Tipo de Seguro *</label>
+                          <select class="form-control" formControlName="tipoDeSeguro_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('tipoDeSeguro_id') }" id="">
+                          <option *ngFor="let item of (optionsTipoDeSeguro$ | async)?.value" [ngValue]="item.id">
+                            {{
+                              item.nome 
+                            }}
+                          </option>
+
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('tipodeseguro_id')">
+                          <div *ngFor="let item of result.validators['tipodeseguro_id']">{{ item.value }}</div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Operação de Financiamento</label>
+                          <select class="form-control" formControlName="operacaoDeFinanciamento">
+                            <option *ngFor="let item of optionsOperacaoDeFinanciamento$" [ngValue]="item.value">
+                              {{
+                                item.label 
+                              }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Ramo de Seguro *</label>
+                          <select class="form-control" formControlName="tipoDeProduto_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('tipoDeProduto_id') }" id="">
+                          <option *ngFor="let item of (optionsTipoDeProduto$ | async)?.value" [ngValue]="item.id">
+                            {{
+                              item.nome 
+                            }}
+                          </option>
+
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('tipodeproduto_id')">
+                          <div *ngFor="let item of result.validators['tipodeproduto_id']">{{ item.value }}</div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Vínculo BNB</label>
+                          <select class="form-control" formControlName="vinculoBNB_Id">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let item of (optionsVinculoBNB$ | async)?.value" [ngValue]="item.id">
+                            {{
+                              item.nome 
+                            }}
+                          </option>
+
+                        </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div>
+                        <div class="form-group mt-4">
+                          <label>Área de Negócio *</label>
+                          <select class="form-control" formControlName="areaDeNegocio_Id"
+                          [ngClass]="{ 'is-invalid': submitted && invalid('areaDeNegocio_id') }" id="">
+                          <option *ngFor="let item of (optionsAreaDeNegocio$ | async)?.value" [ngValue]="item.id">
+                            {{
+                              item.nome 
+                            }}
+                          </option>
+
+                        </select>
+                        <div class="invalid-feedback" *ngIf="invalid('areadenegocio_id')">
+                          <div *ngFor="let item of result.validators['areadenegocio_id']">{{ item.value }}</div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

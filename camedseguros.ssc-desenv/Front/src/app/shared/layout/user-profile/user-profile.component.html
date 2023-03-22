@@ -1,0 +1,14 @@
+<a class="" data-toggle="dropdown" href="#">
+  <span class="user-name">Bem vindo, <strong>{{ this.loggedUser.login }}</strong></span>
+  <span class="fa fa-chevron-down ml-2"></span>
+</a>
+<ul class="dropdown-menu dropdown-alerts">
+  <li>
+    <a href="#" class="dropdown-item">
+      Configurações
+    </a>
+    <a href="#" class="dropdown-item" (click)="logout()">
+      Sair
+    </a>
+  </li>
+</ul>

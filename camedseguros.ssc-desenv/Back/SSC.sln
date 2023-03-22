@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{93393420-3E9D-4686-954F-63232BA19991}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{65615A0A-E8D0-41D5-BA74-630300E9760E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SSC.Core", "Camed.SSC.Core\Camed.SSC.Core.csproj", "{EE3DF8BC-1601-45DF-8CB1-F745399D3760}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SSC.Domain", "Camed.SSC.Model\Camed.SSC.Domain.csproj", "{30011ABC-2A42-441F-B2C5-E750B511129F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{26B3EC0B-2C74-45E0-87CE-C7F2DCFD76A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SSC.Application", "Camed.SSC.Services\Camed.SSC.Application.csproj", "{9E9A7EF2-A603-40F1-AF8C-6683976515B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SCC.Infrastructure.Data", "Camed.SCC.Infrastructure.Data\Camed.SCC.Infrastructure.Data.csproj", "{3E4BE943-9574-4669-8A80-49BED332A487}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SCC.Infrastructure.CrossCutting", "Camed.SCC.Infrastructure.CrossCutting\Camed.SCC.Infrastructure.CrossCutting.csproj", "{9E033A9E-7C57-4805-985A-454A787E4117}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SCC.Infrastructure.IoC", "Camed.SCC.Infrastructure.IoC\Camed.SCC.Infrastructure.IoC.csproj", "{2135F707-7088-4392-983C-077BC79B80D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camed.SSC.WebAPI", "Camed.SSC.WebAPI\Camed.SSC.WebAPI.csproj", "{DBF89087-7AF7-43D9-B295-E25E6E6C5787}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScriptsDataBase", "ScriptsDataBase", "{5C2A48A6-77BE-4242-B696-027BCFE77DE3}"
+	ProjectSection(SolutionItems) = preProject
+		GrupoMenu_table.sql = GrupoMenu_table.sql
+		Menu_Table.sql = Menu_Table.sql
+		Camed.SCC.Infrastructure.Data\UnitOfWork.cs = Camed.SCC.Infrastructure.Data\UnitOfWork.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA5798B3-028B-4690-BB12-E236319F6660}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE3DF8BC-1601-45DF-8CB1-F745399D3760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE3DF8BC-1601-45DF-8CB1-F745399D3760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE3DF8BC-1601-45DF-8CB1-F745399D3760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE3DF8BC-1601-45DF-8CB1-F745399D3760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30011ABC-2A42-441F-B2C5-E750B511129F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30011ABC-2A42-441F-B2C5-E750B511129F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30011ABC-2A42-441F-B2C5-E750B511129F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30011ABC-2A42-441F-B2C5-E750B511129F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E9A7EF2-A603-40F1-AF8C-6683976515B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E9A7EF2-A603-40F1-AF8C-6683976515B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E9A7EF2-A603-40F1-AF8C-6683976515B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E9A7EF2-A603-40F1-AF8C-6683976515B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4BE943-9574-4669-8A80-49BED332A487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4BE943-9574-4669-8A80-49BED332A487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4BE943-9574-4669-8A80-49BED332A487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4BE943-9574-4669-8A80-49BED332A487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E033A9E-7C57-4805-985A-454A787E4117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E033A9E-7C57-4805-985A-454A787E4117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E033A9E-7C57-4805-985A-454A787E4117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E033A9E-7C57-4805-985A-454A787E4117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2135F707-7088-4392-983C-077BC79B80D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2135F707-7088-4392-983C-077BC79B80D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2135F707-7088-4392-983C-077BC79B80D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2135F707-7088-4392-983C-077BC79B80D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF89087-7AF7-43D9-B295-E25E6E6C5787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF89087-7AF7-43D9-B295-E25E6E6C5787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF89087-7AF7-43D9-B295-E25E6E6C5787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF89087-7AF7-43D9-B295-E25E6E6C5787}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE3DF8BC-1601-45DF-8CB1-F745399D3760} = {93393420-3E9D-4686-954F-63232BA19991}
+		{30011ABC-2A42-441F-B2C5-E750B511129F} = {93393420-3E9D-4686-954F-63232BA19991}
+		{9E9A7EF2-A603-40F1-AF8C-6683976515B2} = {93393420-3E9D-4686-954F-63232BA19991}
+		{3E4BE943-9574-4669-8A80-49BED332A487} = {26B3EC0B-2C74-45E0-87CE-C7F2DCFD76A9}
+		{9E033A9E-7C57-4805-985A-454A787E4117} = {26B3EC0B-2C74-45E0-87CE-C7F2DCFD76A9}
+		{2135F707-7088-4392-983C-077BC79B80D3} = {26B3EC0B-2C74-45E0-87CE-C7F2DCFD76A9}
+		{DBF89087-7AF7-43D9-B295-E25E6E6C5787} = {65615A0A-E8D0-41D5-BA74-630300E9760E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {572031A8-0B6C-4FEB-98A6-396DBB860EC7}
+	EndGlobalSection
+EndGlobal

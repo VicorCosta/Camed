@@ -1,0 +1,698 @@
+<app-header-page></app-header-page>
+
+<div *ngIf="alertError" class="alert alert-danger mt-5 mb-0 ml-3 mr-4">{{alertError}}</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div style="min-height: 750px;" class="ibox-content" id="gird-container">
+              <div class="d-flex justify-content-between mb-2">
+                <h2>{{ titulo }}</h2>
+              </div>
+
+              <form role="form" (ngSubmit)="onSubmit()" *ngIf="result$ | async as result">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Ação:<span style="color: red">*</span></label>
+                  <select id="acao" [(ngModel)]="acaoSelecionada" required name="acaoSelecionada"
+                    [ngModelOptions]="{standalone: true}" (change)="handleChange()" style="width: 50%"
+                    class="form-control">
+                    <option value="">Selecione</option>
+                    <option *ngFor="let acompanhamento of acompanhamentos" [ngValue]="acompanhamento.id">
+                      {{ acompanhamento.nome }}
+                    </option>
+                  </select>
+                  <div style="visibility: hidden;" id="acaoSelectAlert" class="invalid-feedback">
+                    Ação é obrigatório.
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Observações: </label>
+                  <textarea [readOnly]="isDisabled" [(ngModel)]="observacaoAcao" [ngModelOptions]="{standalone: true}"
+                    class="form-control"></textarea>
+                  <div style="visibility: hidden;" id="observacao" class="invalid-feedback">
+                    É necessário informar uma observação para cadastrar o acompanhamento.
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label style="position: relative; left: 32px;" class="col-form-label">Permite visualizar
+                    observação:</label>
+                  <input [ngModel]="permissaoobservacao" id="permissaoobservacao" [ngModelOptions]="{standalone: true}"
+                    style="transform: scale(2);position: relative;left: -178px;" type="checkbox" />
+                </div>
+                <div class="form-group">
+                  <label type="boolean" style="position: relative; left: 32px;" class="col-form-label">Permite
+                    visualizar
+                    anexo:</label>
+                  <input [ngModel]="permissaoanexo" id="permissaoanexo" [ngModelOptions]="{standalone: true}"
+                    style="transform: scale(2);position: relative;left: -146px;" type="checkbox" />
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Anexos:</label>
+                  <p-fileUpload #fileUploader class="p-fileupload" name="files"
+                    invalidFileSizeMessageSummary="{0}: Tamanho de arquivo inválido, "
+                    invalidFileSizeMessageDetail="o tamanho máximo permitido é de {0}." [showUploadButton]="false"
+                    chooseLabel="Escolher" cancelLabel="Cancelar" (onSelect)="UploadFiles($event)" multiple="multiple"
+                    maxFileSize="1000000">
+                  </p-fileUpload>
+                  <div style="visibility: hidden;" id="obsanexos" class="invalid-feedback">
+                    Para salvar o acompanhamento é necessário informar, pelo menos, um arquivo.
+                  </div>
+                </div>
+
+                <!--Inicio Frame Finalizar Cotação -->
+                <div *ngIf="acaoSelecionada == 7">
+                  <fieldset>
+                    <legend>Finalizar Cotação</legend>
+
+                    <div style="width: 50%">
+                      <div style="width: 100%; display: inline-flex">
+                        <div style="width: 25%">
+                          <label for="recipient-name" class="col-form-label">Enviar e-mail ao segurado? </label>
+                        </div>
+                        <div style="width: 10%">
+                          <p-inputSwitch [(ngModel)]="checked" (onChange)="handleEnviaEmail($event)"
+                            formControlName="enviaemail" [readonly]="viewOnly" class="row pl-3">
+                          </p-inputSwitch>
+                        </div>
+                      </div>
+
+                      <div>
+                          <div style="width: 100%; display: inline-flex">
+                            <div style="width: 25%">
+                              <label for="recipient-name" class="col-form-label">Projeto CrossUP? </label>
+                            </div>
+                            <div style="width: 10%">
+                              <p-inputSwitch [(ngModel)]="checkedcrossup" (onChange)="handleCrossUP($event)" formControlName="crossup"
+                                [readonly]="viewOnly" class="row pl-3">
+                              </p-inputSwitch>
+                            </div>
+                          </div>
+                      </div>
+
+                      <div>
+                        <label>Categoria</label>
+                       <!--  <select id="categoria" class="form-control" [(ngModel)]="selecaoCategoria"
+                          (change)="handleChange()" style="width: 100%" name="selecaoCategoria">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let tipocategoria of tipocategorias" [ngValue]="tipocategoria.id">{{
+                            tipocategoria.descricao }}</option>
+                        </select> -->
+
+                          <p-autoComplete #autoCompleteAg class="formControl" (onSelect)="selecaoTPCategoria($event)"
+                            [suggestions]="selCategoria" [forceSelection]="true" (onFocus)="(!autoCompleteAg.value && autoCompleteAg)"
+                            [dropdown]="true" (completeMethod)="searchCategoria($event)" field="descricao" placeholder="Selecione">
+                          </p-autoComplete>
+                      </div>
+
+                      <div>
+                        <div>
+                          <label for="recipient-name" class="col-form-label">Valor Prêmio Líquido Atual <span style="color: red">*</span></label>
+                          <input type="text" class="form-control" style="width: 100%" [(ngModel)]="premioAtual"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div>
+                          <label for="recipient-name" class="col-form-label">Valor Prêmio Comissão Atual<span style="color: red">*</span></label>
+                          <input type="text" class="form-control" style="width: 100%" [(ngModel)]="comissaoAtual"
+                            [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div>
+                          <label>Seguradora<span style="color: red">*</span></label>
+                          <p-autoComplete #autoCompleteAg class="formControl" (onSelect)="selecionaSeguradora($event)"
+                            [suggestions]="vwSeguradora" [forceSelection]="true"
+                            (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                            (completeMethod)="searchSeguradora($event)" field="nm_Seguradora" placeholder="Selecione">
+                          </p-autoComplete>
+                        </div>
+                      </div>
+                    </div>
+
+                  </fieldset>
+                </div>
+                <!--Fim Frame Finalizar Cotação -->
+
+                <!-- Inicio aceitar cotação -->
+                <div *ngIf="acaoSelecionada == 11">
+                  <fieldset>
+                    <legend>Produtor BNB</legend>
+                    <label for="recipient-name" class="col-form-label">Produtor BNB<span
+                        style="color: #ff0000">*</span></label>
+                    <div style="width: 50%">
+                      <p-autoComplete #autoCompleteAg class="form-Control" [suggestions]="bnbProdutor"
+                        (onSelect)="selecionaProdutor($event)" [forceSelection]="true"
+                        (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                        (completeMethod)="searchProdutorBNB($event)" field="nome">
+                      </p-autoComplete>
+                    </div>
+                  </fieldset>
+                </div>
+                <!-- Fim aceitar cotação -->
+
+                <!-- Inicio motivo recusa -->
+                <div *ngIf="acaoSelecionada == 5">
+                  <fieldset>
+                    <legend>Motivo Recusa</legend>
+                    <label for="recipient-name" class="col-form-label">Motivo de Recusa<span
+                        style="color: #ff0000">*</span></label>
+                    <select id="motrecusa" class="form-control" [(ngModel)]="motivoSelecionado"
+                      (change)="handleChange()" style="width: 50%" name="motivoSelecionado">
+                      <option value="">Selecione</option>
+                      <option *ngFor="let motivorecusa of motivorecusas" [ngValue]="motivorecusa.id">{{
+                        motivorecusa.descricao }}</option>
+                    </select>
+                    <div style="visibility: hidden;" id="msnMotivo" class="invalid-feedback">
+                      É necessário informar um motivo.
+                    </div>
+                  </fieldset>
+                </div>
+                <!-- Fim motivo recusa -->
+
+                <!--Inicio capa cotação sombrero-->
+                <div *ngIf="acaoSelecionada == 15">
+                  <fieldset>
+                    <legend>Capa da Proposta</legend>
+                    <div style="display: inline-flex; width: 100%">
+                      <div style="width: 50%; padding: 0.5%; height: 1%">
+                        <label>Seguradora<span style="color: red">*</span></label>
+                        <p-autoComplete #autoCompleteAg class="formControl" [(ngModel)]="seguradora" id="vwSeguradora"
+                          (change)="handleChange()" (onSelect)="selecionaSeguradora($event)"
+                          [suggestions]="vwSeguradora" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchSeguradora($event)" field="nm_Seguradora" placeholder="Selecione">
+                        </p-autoComplete>
+
+                        <label>Ramo<span style="color: red">*</span></label>
+                        <p-autoComplete #autoCompleteAg class="formControl" id="vwRamo"
+                          (onSelect)="selecionaRamo($event)" [suggestions]="vwRamo" [forceSelection]="true"
+                          (onFocus)="(!autoCompleteAg.value && autoCompleteAg)" [dropdown]="true"
+                          (completeMethod)="searchRamo($event)" field="nm_Ramo" [formGroup]="form"
+                          placeholder="Selecione" [disabled]="false">
+                        </p-autoComplete>
+                      </div>
+
+                      <div style="width: 50%; padding: 0.5%">
+                        <label>Valor da IS<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" style="width: 100%" [(ngModel)]="valorIS"
+                          [ngModelOptions]="{standalone: true}">
+                        <label>Valor Prêmio Líquido<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" style="width: 100%" [(ngModel)]="valorPremioLiquido"
+                          [ngModelOptions]="{standalone: true}">
+                        <label>Valor 1ª Parcela<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" style="width: 100%" [(ngModel)]="valorPrimeiraParcela"
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div>
+                    <div style="padding: 0.5%">
+                      <label>Descrição<span style="color: red">*</span></label>
+                      <textarea name="descricao" id="" cols="30" rows="5" style="width: 100%"
+                        [(ngModel)]="descricaoCapaProposta" [ngModelOptions]="{standalone: true}"
+                        placeholder="Inserir o bem segurado, exemplo: veículo, máquina, descrição do imóvel"></textarea>
+                    </div>
+                    <div style="display: inline-flex; width: 100%">
+                      <div style="width: 50%; padding: 0.5%">
+                        <label>Nº da Proposta<span style="color: red">*</span></label>
+                        <div style>
+                          <p-autoComplete #autoComplete class="formControl" formControlName="numeroSolicitacao"
+                            id="numeroSolicitacao" (onSelect)="selecionaSolicitacao($event)"
+                            [suggestions]="numSolicitacao" [forceSelection]="true"
+                            (onFocus)="!autoComplete.value && autoComplete" [dropdown]="false"
+                            (completeMethod)="searchNumeroSolicitacao($event)" dropdownMode="current" field="numero"
+                            placeholder="Informe o número da Proposta"
+                            [ngClass]="{ 'is-invalid': submitted && invalid('numSolicitacao') }">
+                          </p-autoComplete>
+                        </div>
+
+                        <label>Tipo de Seguro<span style="color: red">*</span></label>
+                        <select id="selTipoSeguroGS" class="form-control" [(ngModel)]="selTipoSeguroGS"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let segGS of seguroGS" [ngValue]="segGS.id">{{
+                            segGS.nm_Abrev }}</option>
+                        </select>
+
+                        <label>Nº Proposta Anterior</label>
+                        <input id="propostaAnterior" type="text" class="form-control" style="width: 100%"
+                          [(ngModel)]="propostaAnterior" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                      </div>
+                      <div style="width: 50%; padding: 0.5%">
+                        <label>Forma Pagamento 1ª<span style="color: red">*</span></label>
+                        <select id="selFormaPagamentoPrimeiraParcela" class="form-control"
+                          [(ngModel)]="selFormaPagamentoPrimeiraParcela" (change)="handleChange()"
+                          [ngModelOptions]="{standalone: true}" style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let pgtoforma of pgtoformas" [ngValue]="pgtoforma.id">{{
+                            pgtoforma.ds_Forma }}</option>
+                        </select>
+
+                        <label>Data Vencimento 1ª Parcela<span style="color: red">*</span></label>
+                        <!--  <input type="text" class="form-control" formControlName="" style="width: 100%"> -->
+                        <input class="form-control " type="date" [(ngModel)]="dataVencimentoPrimeiraParcela"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" />
+
+                        <label>Forma Pagamento Demais<span style="color: red">*</span></label>
+                        <select id="selPgtoDemaisParcelas" class="form-control" [(ngModel)]="selPgtoDemaisParcelas"
+                          [ngModelOptions]="{standalone: true}" (change)="handleChange()" style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let pgtoforma of pgtoformas" [ngValue]="pgtoforma.id">{{
+                            pgtoforma.ds_Forma }}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div style="display: inline-flex; width: 100%">
+                      <div style="width: 50%; padding: 0.5%">
+                        <label>Comissão (%)</label>
+                        <input type="text" class="form-control" style="width: 100%" [(ngModel)]="comissao"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}">
+                        <label>Tipo Comissão RV<span style="color: red">*</span></label>
+                        <select id="selComissaoRV" class="form-control" [(ngModel)]="selComissaoRV"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+
+                        <label>Agenciamento(%)</label>
+                        <input type="text" class="form-control" style="width: 100%" [(ngModel)]="agenciamento"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}">
+                      </div>
+
+                      <div style="width: 50%; padding: 0.5%">
+                        <label>Segurado VIP?<span style="color: red">*</span></label>
+                        <select id="selseguradoVIP" class="form-control" [(ngModel)]="selseguradoVIP"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+                        <label>Sede envia documento físico?<span style="color: red">*</span></label>
+                        <select id="selSedeEnviaDocumento" class="form-control" [(ngModel)]="selSedeEnviaDocumento"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+
+                        <label>Cadastrado no GS?</label>
+                        <select id="selCadastroGS" class="form-control" [(ngModel)]="selCadastroGS"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form" disabled
+                          style="width: 100%">
+                          <option value="">Não</option>
+                        </select>
+
+                        <label>Grupo de Produção<span style="color: red">*</span></label>
+                        <select id="selGrupoProducao" class="form-control" [(ngModel)]="selGrupoProducao"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let grupoproducao of grupoproducoes" [ngValue]="grupoproducao.id">{{
+                            grupoproducao.nome }}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div style="display: inline-flex; width: 100%">
+                      <diV style="width: 40%; padding: 0.5%">
+                        <label>Seguro Obrigatório?<span style="color: red">*</span></label>
+                        <select id="selSeguroObrigatorio" class="form-control" [(ngModel)]="selecionaSeguroObrigatorio"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+                      </diV>
+                      <div style="width: 40%; padding: 0.5%">
+                        <label>De mercado<span style="color: red">*</span></label>
+                        <select id="selMercado" class="form-control" [(ngModel)]="selecionaMercado"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+                      </div>
+                      <div style="width: 40%; padding: 0.5%">
+                        <label>Vistoria Necessária?<span style="color: red">*</span></label>
+                        <select id="selVistoriaNecessaria" class="form-control" [(ngModel)]="selecionaVistoria"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="">Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div style="padding: 0.5%">
+                      <label>Observação Vistoria<span style="color: red">*</span></label>
+                      <textarea name="descricao" id="" cols="30" rows="5" style="width: 100%" [(ngModel)]="obsVistoria"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder=" Caso a vistoria precise ser feito com URGENCIA ou em endereço diferente da proposta. Favor preencher: PRAZO: XXh | Motivo: XXXXXXXXX | Endereço: Rua: XXXX | Nº XXXXX | Bairro: XXXXXXXXXX | Cidade: XXXXXXXX | UF: XX | CEP: XXXXXX"></textarea>
+                    </div>
+                    <div style="display: inline-flex; width: 100%">
+                      <diV style="width: 50%; padding: 0.5%">
+                        <label>Rastreador?<span style="color: red">*</span></label>
+                        <select id="selRastreador" class="form-control" [(ngModel)]="selecaoRastreamento"
+                          (change)="handleChange()" [ngModelOptions]="{standalone: true}" [formGroup]="form"
+                          style="width: 100%">
+                          <option value="" selected>Selecione</option>
+                          <option value="False">Não</option>
+                          <option value="True">Sim</option>
+                        </select>
+                      </diV>
+                      <div style="width: 50%; padding: 0.5%; margin-top: 1.2%">
+                        <label type="boolean" style="position: relative; left: 32px;" class="col-form-label">É venda
+                          compartilhada?</label>
+                        <input [ngModel]="vendaCompartilhada" id="vendaCompartilhada"
+                          [ngModelOptions]="{standalone: true}"
+                          style="transform: scale(2);position: relative;left: -146px;" type="checkbox" />
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <!--Fim capa cotação sombrero-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </form>
+
+              <!-- ################################################################################################################# -->
+
+
+
+
+
+
+
+              <!--Inicio Frame Geral-->
+
+              <!--  <fieldset>
+                <legend>Frame Aceitar Cotação Sombrero</legend>
+                <fieldset>
+                  <legend>Dados do Segurado</legend>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">CPF/CNPJ <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Segurado <span
+                        style="color: red">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">E-mail <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Telefone <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Data Nascimento <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Genero <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Estado Civil <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Identidade <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Dt.Emissão <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Org.Emissor <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">CEP <span style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Número <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Endereço <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Bairro <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Cidade <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">UF <span style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <Legend>Beneficiário</Legend>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">CPF/CNPJ <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Nome <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Percentual Participação <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Representante Legal</legend>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">CPF <span style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Nome <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Telefone <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Unidade Segurada</legend>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Nome da Propriedade <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">CEP <span style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Área Total <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Código Produto <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Código Cultivo <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Cobertura Qualidade <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Unidade Peso Cultivo <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">V. Custeio Preço Kg <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Nivel Cobertura <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Prod. Segurada <span
+                        style="color: #ff0000">*</span></label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Prod. ESperado <span
+                        style="color: #ff0000">*</span> </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Import. Seg. Hectare <span
+                        style="color: #ff0000">*</span>
+                    </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Import. Segurada <span
+                        style="color: #ff0000">*</span> </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Data Inicio Plantio <span
+                        style="color: #ff0000">*</span>
+                    </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Data Fim Plantio <span
+                        style="color: #ff0000">*</span> </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Talhões</legend>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Nome <span style="color: #ff0000">*</span>
+                    </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Tipo de Solo <span
+                        style="color: #ff0000">*</span> </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Área <span style="color: #ff0000">*</span>
+                    </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Data Plantio <span
+                        style="color: #ff0000">*</span> </label>
+                    <input type="text" class="form-control" formControlName="" style="width: 30%">
+                  </div>
+                  <div class="form-group">
+                    <label class="col-form-label">Anexos: <span style="color: #ff0000">*</span></label>
+                    <p-fileUpload #fileUploader name="files"
+                      invalidFileSizeMessageSummary="{0}: Tamanho de arquivo inválido, " [showUploadButton]="false"
+                      chooseLabel="Escolher" cancelLabel="Cancelar" multiple="multiple" maxFileSize="1000000">
+                    </p-fileUpload>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Questiónário</legend>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Resumo do Prêmio</legend>
+
+                  <div>
+                    <label for="recipient-name" class="col-form-label">TipoSubvenção * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">PremioTotal * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">V. Sub, Federal * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">V. Sub. Estadual * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">V. Premio Segurado * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Data 1ª Parcela * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                  <div>
+                    <label for="recipient-name" class="col-form-label">Em quantas? * </label>
+                    <input type="text" class="form-control" formControlName="">
+                  </div>
+                </fieldset>
+              </fieldset> -->
+              <!--Fim Frame Geral-->
+
+              <br>
+              <div style="text-align: right;">
+                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>-->
+                <button (click)="onSubmit()" type="button" class="btn btn-primary" id="novaSituacao">Salvar</button>
+              </div>

@@ -1,0 +1,480 @@
+<app-header-page></app-header-page>
+<style>
+
+</style>
+<div id="tudo" class="wrapper wrapper-content">
+  
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+              Relatório
+              <div class="ibox-tools">
+
+              </div>
+            </div>
+            <div class="ibox-content" id="gird-container">
+
+              <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+              <form>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label>Selecione o relatório:</label>
+                    <select id="relatorioType" class="form-control">
+                      <option value="0">Relatório de Acompanhamentos</option>
+                      <option value="1">Monitoria</option>
+                      <option value="2">Canceladas</option>
+                      <option value="3">Avaliação de Atendimento</option>
+                      <option value="4">Capa da Proposta de Solicitação</option>
+                      <option value="5">Relatório de Conversão</option>
+                      <option value="6">Relatório de Prevenção de Recusas</option>
+                      <option value="7">Relatório de Pendência de Documentação (sinistro)</option>
+                      <option value="8">Contabilização Solicitação por Agência</option>
+                      <option value="9">Agendamentos de Ligação</option>
+                      <option value="10">Relatório de Inbox</option>
+                      <option value="11">Relatório de Checkin</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label>Selecione o formato:</label>
+                    <select id="formato" class="form-control">
+                      <option value="PDF">PDF</option>
+                      <option value="EXCEL">EXCEL</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6" style="margin-bottom: 0px; font-size: 16px;">
+                    <label>Filtros</label>
+                  </div>
+                  <div id="juncao" style="border: 2px solid rgb(190, 190, 190); padding: 10px;
+                  width: 100%; border-radius: 8px;">
+                    <div *ngIf="relatorioType != '10'" class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>N* Solicitação</label>
+                        <input id="solicitacao" type="text" onkeyup="
+                          var thisId = document.getElementById(this.id);
+                          var remChars =  thisId.value.replace(/[^0-9\.]/g,'');
+                          thisId.value =  remChars.replace(/\./g,'');" maxlength="20" class="form-control">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Segurado</label>
+                        <input type="text" class="form-control" id="segurado" placeholder="">
+                      </div>
+                    </div>
+                    <div *ngIf="relatorioType != '10'" class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Superintendência</label>
+                        <select id="superintendencia" class="form-control">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let super of (super$ | async)?.value" [ngValue]="super.superId">
+                            {{
+                              super.super
+                            }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Operador</label>
+                        <select id="operador" class="form-control">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let atendente of (atendentes$ | async)?.value" [ngValue]="atendente.id">
+                            {{
+                              atendente.nome
+                            }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngIf="relatorioType != '10'" class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Super Conta</label>
+                        <select id="superConta" class="form-control">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let super of (super$ | async)?.value" [ngValue]="super.superId">
+                            {{
+                              super.super
+                            }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Atendente</label>
+                        <select id="atendente" class="form-control">
+                          <option value="">Selecione</option>
+                          <option *ngFor="let atendente of (atendentes$ | async)?.value" [ngValue]="atendente.id">
+                            {{
+                              atendente.nome
+                            }}
+                          </option>
+
+                        </select>
+                      </div>
+                    </div>
+                      <div *ngIf="relatorioType != '10'" class="form-group">
+                        <label>CNPJ/CPF/CEI</label>
+                        <input type="text" class="form-control" id="cnpj" placeholder="">
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Data Inicial</label>
+                          <input type="date" class="form-control" id="dataInicial" placeholder="">
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label>Data Final</label>
+                          <input type="date" class="form-control" id="dataFinal" placeholder="">
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType == '6'" class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Data Fechamento (Inicial)</label>
+                          <input type="date" class="form-control" id="dataFechamentoI" placeholder="">
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label>Data Fechamento (Final)</label>
+                          <input type="date" class="form-control" id="dataFechamentoF" placeholder="">
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType == '0'" class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Data Inicial (Acompanhamento)</label>
+                          <input type="date" class="form-control" id="dataInicialAC" placeholder="">
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label>Data Final (Acompanhamento)</label>
+                          <input type="date" class="form-control" id="dataFinalAC" placeholder="">
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType != '10'" class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Área de Negócio:</label>
+                          <select id="areaNegocio" class="form-control">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let area of (areaDeNegocio$ | async)?.value" [ngValue]="area.id">
+                              {{
+                                area.nome
+                              }}
+                            </option>
+                          </select>
+                        </div>
+                        <div *ngIf="relatorioType != '7'" class="form-group col-md-6">
+                          <label>Tipo de Seguro:</label>
+                          <select id="tipoSeguro" class="form-control">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let seguro of (tipoDeSeguro$ | async)?.value" [ngValue]="seguro.id">
+                              {{
+                                seguro.nome
+                              }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType != '10'" class="form-row">
+                        <div *ngIf="relatorioType != '7'" class="form-group col-md-6">
+                          <label>Segmento:</label>
+                          <select id="segmento" class="form-control">
+                            <option value=""></option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Desativado">Desativado</option>
+                          </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label>Ramo de Seguro:</label>
+                          <select id="ramoSeguro" class="form-control">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let produto of (tipoDeProduto$ | async)?.value" [ngValue]="produto.id">
+                              {{
+                                produto.nome
+                              }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType != '10'" class="form-row">
+                        <div class="form-group col-md-2">
+                          <label>Status usuário:</label>
+                          <select id="status" class="form-control">
+                            <option value=""></option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                          </select>
+                        </div>
+                        <div *ngIf="relatorioType == '6'" class="form-group col-md-2">
+                          <label>Vistoria Necessária:</label>
+                          <select id="vistoria" class="form-control">
+                            <option value=""></option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                          </select>
+                        </div>
+                        <div class="form-check" style="position: relative;
+                        top: 33px; left: 20px;">
+                          <input class="form-check-input" type="checkbox" id="gridCheck" style="transform: scale(2);">
+                          <label class="form-check-label" style="margin-left: 6px; font-size: 15px;">
+                            Em Processo
+                          </label>
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType != '10'" class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Situação</label>
+                          <select onchange=
+                            " let dom = document.getElementById('situacaoInput');
+                              
+                              dom.innerHTML = dom.innerHTML +' '+ this.value + ' | ';
+                            " 
+
+                            class="form-control" style="margin-bottom: 8px;">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let situacao of (situacoes$ | async)?.value" [ngValue]="situacao.id">
+                              {{
+                                situacao.nome
+                              }}
+                            </option>
+                          </select>
+                          <p class="form-control" id="situacaoInput" style="height: 150px; margin-bottom: 8px; overflow-y: auto;"></p>
+                          <button onclick="document.getElementById('situacaoInput').innerHTML = '';" type="button" class="btn btn-default btn" style="background-color: #dfdfdf; color: rgb(0, 0, 0);">
+                            Remover Situação
+                          </button>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label>Agência</label>
+                          <select onchange=
+                            " let dom = document.getElementById('agenciaInput');
+                              
+                              dom.innerHTML = dom.innerHTML +' '+ this.value + ' | ';
+                            " 
+
+                            class="form-control" style="margin-bottom: 8px;">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let agencia of (agencias$ | async)?.value" [ngValue]="agencia.id">
+                              {{
+                                agencia.nome
+                              }}
+                            </option>
+                          </select>
+                          <p class="form-control" id="agenciaInput" style="height: 150px; margin-bottom: 8px; overflow-y: auto;"></p>
+                          <button onclick="document.getElementById('agenciaInput').innerHTML = '';" type="button" class="btn btn-default btn" style="background-color: #dfdfdf; color: rgb(0, 0, 0);">
+                            Remover Agência
+                          </button>
+                        </div>
+                      </div>
+                      <div *ngIf="relatorioType != '10'" class="form-row">
+                        <div class="form-group col-md-6">
+                          <label>Agência Conta</label>
+                          <select onchange=
+                            " let dom = document.getElementById('agenciaContaInput');
+                              
+                              dom.innerHTML = dom.innerHTML +' '+ this.value + ' | ';
+                            " 
+
+                            class="form-control" style="margin-bottom: 8px;">
+                            <option value="">Selecione</option>
+                            <option *ngFor="let agencia of (agencias$ | async)?.value" [ngValue]="agencia.id">
+                              {{
+                                agencia.nome
+                              }}
+                            </option>
+                          </select>
+                          <p class="form-control" id="agenciaContaInput" style="height: 150px; margin-bottom: 8px; overflow-y: auto;"></p>
+                          <button onclick="document.getElementById('agenciaContaInput').innerHTML = '';" type="button" class="btn btn-default btn" style="background-color: #dfdfdf; color: rgb(0, 0, 0);">
+                            Remover Agência
+                          </button>
+                        </div>
+                      </div>
+                    <button (click)="funcaoBotao()" type="button" class="btn btn-default btn" style="background-color: #f5a42a; color: white;">
+                      <span class="glyphicon glyphicon-print"></span> Gerar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div id="imprimir" style="display: none; text-align: center;">
+  <div>
+  <div>
+  <div>
+  <div>
+  <div *ngIf="relatorioType != '10' && relatorioType != '0' && relatorioType != '6' && relatorioType != '7'">
+      <label>Tipo de Relatório: {{relatorio.tipoRelatorio}} </label>
+      <br><hr>
+      <label>N* Solicitação: {{relatorio.solicitacao}}</label>
+      <br>
+      <label>Segurado: {{relatorio.segurado}}</label>
+      <br><br>
+      <label>Superintendência: {{relatorio.superintendencia}}</label>
+      <br>
+      <label>Operador: {{relatorio.operador}}</label>
+      <br><br>
+      <label>Super Conta: {{relatorio.superConta}}</label>
+      <br>
+      <label>Atendente: {{relatorio.atendente}}</label>
+      <br><br>
+      <label>CNPJ/CPF/CEI: {{relatorio.cnpj}}</label>
+      <br><br>
+      <label>Data Inicial: {{relatorio.dataInicial}}</label>
+      <br>
+      <label>Data Final: {{relatorio.dataFinal}}</label>
+      <br>
+      <label>Área de Negócio: {{relatorio.areaNegocio}}</label>
+      <br><br>
+      <label>Tipo de Seguro: {{relatorio.tipoSeguro}}</label>
+      <br>
+      <label>Segmento: {{relatorio.segmento}}</label>
+      <br><br>
+      <label>Ramo de Seguro: {{relatorio.ramoSeguro}}</label>
+      <br>
+      <label>Status Usuário: {{relatorio.status}}</label>
+      <br>
+      <label>Em Processo: {{relatorio.emProcesso}}</label>
+      <br><br>
+      <label>Situação: {{relatorio.situacao}}</label>
+      <br><br>
+      <label>Agência: {{relatorio.agencia}}</label>
+      <br><br>
+      <label>Agência Conta: {{relatorio.agenciaConta}}</label>
+  </div>
+  <div *ngIf="relatorioType == '0'">
+    <label>Tipo de Relatório: {{relatorio.tipoRelatorio}} </label>
+    <br><hr>
+    <label>N* Solicitação: {{relatorio.solicitacao}}</label>
+    <br>
+    <label>Segurado: {{relatorio.segurado}}</label>
+    <br><br>
+    <label>Superintendência: {{relatorio.superintendencia}}</label>
+    <br>
+    <label>Operador: {{relatorio.operador}}</label>
+    <br><br>
+    <label>Super Conta: {{relatorio.superConta}}</label>
+    <br>
+    <label>Atendente: {{relatorio.atendente}}</label>
+    <br><br>
+    <label>CNPJ/CPF/CEI: {{relatorio.cnpj}}</label>
+    <br>
+    <label>Data Inicial: {{relatorio.dataInicial}}</label>
+    <br><br>
+    <label>Data Final: {{relatorio.dataFinal}}</label>
+    <br>
+    <label>Data Inicial (Acompanhamento): {{relatorio.dataInicialAC}}</label>
+    <br>
+    <label>Data Final (Acompanhamento): {{relatorio.dataFinalAC}}</label>
+    <br><br>
+    <label>Área de Negócio: {{relatorio.areaNegocio}}</label>
+    <br><br>
+    <label>Tipo de Seguro: {{relatorio.tipoSeguro}}</label>
+    <br>
+    <label>Segmento: {{relatorio.segmento}}</label>
+    <br><br>
+    <label>Ramo de Seguro: {{relatorio.ramoSeguro}}</label>
+    <br>
+    <label>Status Usuário: {{relatorio.status}}</label>
+    <br>
+    <label>Em Processo: {{relatorio.emProcesso}}</label>
+    <br><br>
+    <label>Situação: {{relatorio.situacao}}</label>
+    <br><br>
+    <label>Agência: {{relatorio.agencia}}</label>
+    <br><br>
+    <label>Agência Conta: {{relatorio.agenciaConta}}</label>
+</div>
+<div *ngIf="relatorioType == '6'">
+  <label>Tipo de Relatório: {{relatorio.tipoRelatorio}} </label>
+  <br><hr>
+  <label>N* Solicitação: {{relatorio.solicitacao}}</label>
+  <br>
+  <label>Segurado: {{relatorio.segurado}}</label>
+  <br><br>
+  <label>Superintendência: {{relatorio.superintendencia}}</label>
+  <br>
+  <label>Operador: {{relatorio.operador}}</label>
+  <br><br>
+  <label>Super Conta: {{relatorio.superConta}}</label>
+  <br>
+  <label>Atendente: {{relatorio.atendente}}</label>
+  <br><br>
+  <label>CNPJ/CPF/CEI: {{relatorio.cnpj}}</label>
+  <br>
+  <label>Data Inicial: {{relatorio.dataInicial}}</label>
+  <br><br>
+  <label>Data Final: {{relatorio.dataFinal}}</label>
+  <br>
+  <label>Data Fechamento Inicial: {{relatorio.dataFechamentoI}}</label>
+  <br>
+  <label>Data Fechamento Final: {{relatorio.dataFechamentoF}}</label>
+  <br><br>
+  <label>Área de Negócio: {{relatorio.areaNegocio}}</label>
+  <br><br>
+  <label>Tipo de Seguro: {{relatorio.tipoSeguro}}</label>
+  <br>
+  <label>Segmento: {{relatorio.segmento}}</label>
+  <br><br>
+  <label>Ramo de Seguro: {{relatorio.ramoSeguro}}</label>
+  <br>
+  <label>Status Usuário: {{relatorio.status}}</label>
+  <br>
+  <label>Vistoria Necessária: {{relatorio.vistoria}}</label>
+  <br>
+  <label>Em Processo: {{relatorio.emProcesso}}</label>
+  <br><br>
+  <label>Situação: {{relatorio.situacao}}</label>
+  <br><br>
+  <label>Agência: {{relatorio.agencia}}</label>
+  <br><br>
+  <label>Agência Conta: {{relatorio.agenciaConta}}</label>
+</div>
+<div *ngIf="relatorioType == '7'">
+  <label>Tipo de Relatório: {{relatorio.tipoRelatorio}} </label>
+  <br><hr>
+  <label>N* Solicitação: {{relatorio.solicitacao}}</label>
+  <br>
+  <label>Segurado: {{relatorio.segurado}}</label>
+  <br><br>
+  <label>Superintendência: {{relatorio.superintendencia}}</label>
+  <br>
+  <label>Operador: {{relatorio.operador}}</label>
+  <br><br>
+  <label>Super Conta: {{relatorio.superConta}}</label>
+  <br>
+  <label>Atendente: {{relatorio.atendente}}</label>
+  <br><br>
+  <label>CNPJ/CPF/CEI: {{relatorio.cnpj}}</label>
+  <br>
+  <label>Data Inicial: {{relatorio.dataInicial}}</label>
+  <br>
+  <label>Data Final: {{relatorio.dataFinal}}</label>
+  <br><br>
+  <label>Área de Negócio: {{relatorio.areaNegocio}}</label>
+  <br><br>
+  <label>Ramo de Seguro: {{relatorio.ramoSeguro}}</label>
+  <br>
+  <label>Status Usuário: {{relatorio.status}}</label>
+  <br>
+  <label>Em Processo: {{relatorio.emProcesso}}</label>
+  <br><br>
+  <label>Situação: {{relatorio.situacao}}</label>
+  <br><br>
+  <label>Agência: {{relatorio.agencia}}</label>
+  <br><br>
+  <label>Agência Conta: {{relatorio.agenciaConta}}</label>
+</div>
+<div *ngIf="relatorioType == '10'">
+  <label>Tipo de Relatório: {{relatorio.tipoRelatorio}} </label>
+  <br><hr>
+  <label>Data Inicial: {{relatorio.dataInicial}}</label>
+  <br>
+  <label>Data Final: {{relatorio.dataFinal}}</label>
+</div>
+  <hr>
+  </div>
+  </div>
+  </div>
+  </div>
+</div>

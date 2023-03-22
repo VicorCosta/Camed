@@ -1,0 +1,89 @@
+<app-header-page></app-header-page>
+
+<div class="wrapper wrapper-content">
+
+  <div id="itensAuditoria" style="visibility: hidden;" class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div id="alerta" class="alert alert-danger" role="alert">
+                  Preencha todos os campos obrigatórios
+            </div>
+            <div class="ibox-title">
+              <div class="ibox-tools">
+             <button type="text" (click)="consultar()" pButton class="btn btn-sm btn-primary float-left m-t-n-xs">
+                  <i *ngIf="consultando" class="spinner-border spinner-border-sm mr-1"></i>
+                  <i *ngIf="!consultando"class="fa fa-search mr-1"></i>
+                  Consultar
+                </button>
+                <button *ngIf="itemsImprimir" type="button" (click)="openPrint()" class="btn btn-default btn-sm" style="margin-left: 1em; margin-top: -0.4em;">
+                  <span class="glyphicon glyphicon-print"></span> Visualizar Impressão
+                </button>
+              </div>
+            </div>
+            <div class="ibox-content" id="gird-container">
+
+              <div id="proibicao">
+                <h5>Apenas <b>Gerentes</b> e <b>Administradores</b> podem acessar esta tela.</h5>
+              </div>
+              <app-placeholder-grid [show]="loadingDataGrid && hasInitialLoading"></app-placeholder-grid>
+
+              <div class=" d-flex" style="margin-bottom: 1em;" >
+                <div class="form-row">
+                  <div class="col">
+                    <label>Data Inicial *</label>
+                    <input id="DI" class="form-control" name="date" type="date">
+                  </div>
+                  <div class="col">
+                    <label>Data Final *</label>
+                    <input id="DF" class="form-control" name="date" type="date">
+                  </div>
+                  <div class="col">
+                    <label id="lb_user">Usuário</label>
+                    <input id="user" type="text" class="form-control" style="width: 200px;">
+                  </div>
+                  <div class="col">
+                    <label id="lb_evento">Evento</label>
+                    <select id="evento" class="form-control" style="height: 36px;">
+                          <option value=""></option>
+                          <option value="0">Insert</option>
+                          <option value="2">Update</option>
+                          <option value="1">Delete</option>
+                          <option value="3">Sucesso na Autenticação</option>
+                          <option value="4">Falha na Autenticação</option>
+                    </select>
+                  </div>
+                  <div class="col">
+                    <label id="lb_nomeTabela">Tabela</label>
+                    <input id="nomeTabela" type="text" class="form-control">
+                  </div>
+                  <div class="col">
+                    <label id="lb_chave">Chave</label>
+                    <input id="chave" type="text" class="form-control">
+                  </div>
+                  <div class="col-lg-3">
+                    <label id="lb_numeroSolicitacao" >Número de Solicitação</label>
+                    <input id="numeroSolicitacao" type="text" class="form-control">
+                  </div>
+                  <div class="col">
+                    <label id="lb_messagem">Mensagem</label>
+                    <input id="messagem" type="text" class="form-control">
+                  </div>
+                </div>
+              </div>
+              <div id="tabela" style="visibility: hidden;">
+                <angular-slickgrid gridId="gridAuditoria" [hidden]="loadingDataGrid && hasInitialLoading"
+                  [columnDefinitions]="columnDefinitions" [gridOptions]="gridOptions" [dataset]="dataset"
+                  (onAngularGridCreated)="angularGridReady($event.detail)">
+                </angular-slickgrid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
